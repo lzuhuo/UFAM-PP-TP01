@@ -1,0 +1,35 @@
+package db;
+
+import java.sql.*;
+
+public class Config {
+    
+    private static String url = "jdbc:sqlite:/home/elizeu/Documents/UFAM/PP/TP01/src/db/moto.db";
+    protected static Connection conexao = null;
+
+    public Config(){
+        if(conexao == null) conecta();
+    }
+
+    private static boolean conecta(){
+        try{
+            conexao = DriverManager.getConnection(url);
+            System.out.println("Conexao com sucesso!");
+            return true;
+        }catch (SQLException e){
+            System.out.println("Conexao falhou!");
+            return false;
+        }
+    }
+
+    public static boolean desconecta(){
+        try{
+            conexao.close();
+            System.out.println("Desconexao com sucesso!");
+            return true;
+        }catch (SQLException e){
+            System.out.println("Desconexao falhou!");
+            return false;
+        }
+    }
+}

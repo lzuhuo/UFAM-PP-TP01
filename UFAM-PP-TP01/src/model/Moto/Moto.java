@@ -1,0 +1,61 @@
+package model.Moto;
+
+import java.util.ArrayList;
+
+import model.Categoria.Acessorio;
+
+public class Moto {
+    public int CD_MOTO;
+    public model.Categoria.Moto CATMOTO;
+    public String DS_MARCA;
+    public String DS_MODELO;
+    public int NR_ANO;
+    public model.Categoria.Motor TP_MOTOR;
+    public float CP_TANQUE;
+    public float AV_CONSUMO;
+    public float VL_CUSTO;
+    public String ST_ATIVO;
+    public ArrayList<Acessorio> Acessorios;
+
+    public Moto(
+                int CD_MOTO, model.Categoria.Moto CATMOTO, String DS_MARCA, String DS_MODELO, 
+                int NR_ANO,  model.Categoria.Motor TP_MOTOR, float CP_TANQUE, float AV_CONSUMO, 
+                float VL_CUSTO, ArrayList<Acessorio> Acessorios){
+        this.CD_MOTO = CD_MOTO;
+        this.CATMOTO = CATMOTO;
+        this.DS_MARCA = DS_MARCA;
+        this.DS_MODELO = DS_MODELO;
+        this.NR_ANO = NR_ANO;
+        this.TP_MOTOR = TP_MOTOR;
+        this.CP_TANQUE = CP_TANQUE;
+        this.AV_CONSUMO = AV_CONSUMO;
+        this.VL_CUSTO = VL_CUSTO;
+        this.ST_ATIVO = "S";
+        this.Acessorios = Acessorios;
+    }
+
+    public Moto( Moto moto){
+        this.CD_MOTO = moto.CD_MOTO;
+        this.CATMOTO = moto.CATMOTO;
+        this.DS_MARCA = moto.DS_MARCA;
+        this.DS_MODELO = moto.DS_MODELO;
+        this.NR_ANO = moto.NR_ANO;
+        this.TP_MOTOR = moto.TP_MOTOR;
+        this.CP_TANQUE = moto.CP_TANQUE;
+        this.AV_CONSUMO = moto.AV_CONSUMO;
+        this.VL_CUSTO = moto.VL_CUSTO;
+        this.ST_ATIVO = "S";
+        this.Acessorios = moto.Acessorios;
+    }
+
+    
+
+    public String toString(){
+        return String.format("{'DS_CATEGORIA': %s,'DS_MARCA': %s, 'DS_MODELO': %s, " +
+                             "'NR_ANO': %d, 'TP_MOTOR': %s, 'CP_TANQUE': %f, " +
+                             "'AV_CONSUMO': %f, 'VL_CUSTO': %f, 'ST_ATIVO': %s,'Acessorios': [%s]}",
+                             this.CATMOTO, this.DS_MARCA, this.DS_MODELO, this.NR_ANO, this.TP_MOTOR, 
+                             this.CP_TANQUE, this.AV_CONSUMO, this.VL_CUSTO, this.ST_ATIVO, this.Acessorios
+                             );
+    }
+}

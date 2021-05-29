@@ -1,0 +1,214 @@
+package controller.Cadastro;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import javax.swing.*;
+import model.*;
+import model.Categoria.Acessorio;
+import services.*;
+
+/* HtmlDemo.java needs no other files. */
+public class MotoController extends JPanel implements ActionListener {
+  
+  JLabel ds_categoria_moto_l = new JLabel("Categoria: ");
+  ArrayList<model.Categoria.Moto> catmotos;
+  JComboBox<model.Categoria.Moto> ds_categoria_moto_f;
+  
+  JLabel ds_marca_l = new JLabel("Marca: ");
+  JTextField ds_marca_f = new JTextField(10);
+  
+
+  JLabel ds_modelo_l = new JLabel("Modelo: ");
+  JTextField ds_modelo_f = new JTextField(10);
+
+  JLabel nr_ano_l = new JLabel("Ano: ");
+  JTextField nr_ano_f = new JTextField(6);
+
+  JLabel tp_categoria_motor_l = new JLabel("Tipo Motor: ");
+  ArrayList<model.Categoria.Motor> catmotor;
+  JComboBox<model.Categoria.Motor> tp_categoria_motor_f;
+
+  JLabel cp_tanque_l = new JLabel("Cap. Tanque: ");
+  JTextField cp_tanque_f = new JTextField(3);
+
+  JLabel av_consumo_l = new JLabel("Média Consumo: ");
+  JTextField av_consumo_f = new JTextField(3);
+
+  JLabel vl_custo_l = new JLabel("Valor Custo: ");
+  JTextField vl_custo_f = new JTextField(4);
+
+  JLabel ds_acessorio_moto_l = new JLabel("Acessorios: ");
+  DefaultListModel<model.Categoria.Acessorio> catacessorios = getAcessorioCat();
+  JList<model.Categoria.Acessorio> ds_acessorio_moto_f;
+
+  JButton saveMoto = new JButton("Salvar");
+
+  public MotoController() {
+    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+    
+    setAction();
+
+    catmotos = new ArrayList<model.Categoria.Moto>(getMotoCat());
+    catmotor = new ArrayList<model.Categoria.Motor>(getMotorCat());
+    
+    
+    saveMoto.setMnemonic(KeyEvent.VK_C);
+    saveMoto.setAlignmentX(Component.CENTER_ALIGNMENT);
+    
+    ds_categoria_moto_f = new JComboBox<model.Categoria.Moto>();
+    ds_categoria_moto_f.addItem(new model.Categoria.Moto(0,"Selecione"));
+    for (model.Categoria.Moto moto : catmotos) {
+      ds_categoria_moto_f.addItem(moto);
+    }
+
+    tp_categoria_motor_f = new JComboBox<model.Categoria.Motor>();
+    tp_categoria_motor_f.addItem(new model.Categoria.Motor(0,"Selecione"));
+    for (model.Categoria.Motor motor : catmotor) {
+      tp_categoria_motor_f.addItem(motor);
+    }
+
+    ds_acessorio_moto_f = new JList<model.Categoria.Acessorio>(catacessorios);
+        
+    JPanel motoPanel = new JPanel();
+    
+    motoPanel.setLayout(null);
+    motoPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory
+        .createTitledBorder("Cadastrar nova Moto"), BorderFactory
+        .createEmptyBorder(10, 10, 10, 10)));
+        
+    ds_categoria_moto_l.setBounds(20,30,120,20);
+    motoPanel.add(ds_categoria_moto_l);    
+    ds_categoria_moto_f.setBounds(100,30,120,20);
+    motoPanel.add(ds_categoria_moto_f);
+
+    ds_marca_l.setBounds(20,60,120,20);
+    motoPanel.add(ds_marca_l);    
+    ds_marca_f.setBounds(100,60,120,20);
+    motoPanel.add(ds_marca_f);
+
+    ds_modelo_l.setBounds(20,90,120,20);
+    motoPanel.add(ds_modelo_l);    
+    ds_modelo_f.setBounds(100,90,120,20);
+    motoPanel.add(ds_modelo_f);
+
+    nr_ano_l.setBounds(240,30,120,20);
+    motoPanel.add(nr_ano_l);    
+    nr_ano_f.setBounds(340,30,120,20);
+    motoPanel.add(nr_ano_f);
+
+    tp_categoria_motor_l.setBounds(240,60,120,20);
+    motoPanel.add(tp_categoria_motor_l);    
+    tp_categoria_motor_f.setBounds(340,60,120,20);
+    motoPanel.add(tp_categoria_motor_f);
+
+    cp_tanque_l.setBounds(240,90,120,20);
+    motoPanel.add(cp_tanque_l);    
+    cp_tanque_f.setBounds(340,90,120,20);
+    motoPanel.add(cp_tanque_f);
+
+    av_consumo_l.setBounds(480,30,130,20);
+    motoPanel.add(av_consumo_l);    
+    av_consumo_f.setBounds(620,30,120,20);
+    motoPanel.add(av_consumo_f);
+
+    vl_custo_l.setBounds(480,60,120,20);
+    motoPanel.add(vl_custo_l);    
+    vl_custo_f.setBounds(620,60,120,20);
+    motoPanel.add(vl_custo_f);
+
+    ds_acessorio_moto_l.setBounds(480,90,120,20);
+    motoPanel.add(ds_acessorio_moto_l);    
+    ds_acessorio_moto_f.setBounds(620,90,120,60);
+    motoPanel.add(ds_acessorio_moto_f);
+
+    saveMoto.setBounds(20,120,120,20);
+    motoPanel.add(saveMoto);
+
+    setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    add(motoPanel);
+  }
+
+  private void setAction()
+  {
+    saveMoto.addActionListener(this);
+  }
+
+  public void actionPerformed(ActionEvent e) {
+
+    MotoService motoserv = new MotoService();
+    String message = "Cliente salvo com sucesso!";
+    Message resultado;
+    model.Categoria.Moto categoria_moto = new model.Categoria.Moto(0, "");
+    model.Categoria.Motor categoria_motor = new model.Categoria.Motor(0, "");;
+    ArrayList<Acessorio> Acessorios = new ArrayList<Acessorio>(); 
+    
+    for (model.Categoria.Moto moto : catmotos) {
+      if(moto == ds_categoria_moto_f.getSelectedItem()){
+        categoria_moto = moto;
+      }
+    }
+
+    for (model.Categoria.Motor motor : catmotor) {
+      if(motor == tp_categoria_motor_f.getSelectedItem()){
+        categoria_motor = motor;
+      }
+    }
+
+    for (model.Categoria.Acessorio acessorio : ds_acessorio_moto_f.getSelectedValuesList()) {
+      Acessorios.add(acessorio);
+    }
+
+    model.Moto.Moto moto = new model.Moto.Moto(
+      0,
+      categoria_moto,  
+      ds_marca_f.getText(),
+      ds_modelo_f.getText(),
+      Integer.parseInt(nr_ano_f.getText()),
+      categoria_motor,
+      Float.parseFloat(cp_tanque_f.getText()),
+      Float.parseFloat(av_consumo_f.getText()),
+      Float.parseFloat(vl_custo_f.getText()),
+      Acessorios
+    );
+    resultado = motoserv.adicionarMoto(moto);
+    
+    if(resultado.status){
+      JOptionPane.showMessageDialog(null, message);
+    }else{
+      if(resultado.message.contains("[SQLITE_CONSTRAINT_UNIQUE]")){
+        JOptionPane.showMessageDialog(null, "Erro ao salvar cliente \nO cliente já existe na base!");
+      }else{
+        JOptionPane.showMessageDialog(null, "Erro ao salvar cliente \n" + resultado.message);
+      }
+    }
+    setVisible(false);
+  }
+  
+  private ArrayList<model.Categoria.Moto> getMotoCat(){
+    ArrayList<model.Categoria.Moto> catmotos = new ArrayList<model.Categoria.Moto>();
+    MotoService catmotoserv = new MotoService();
+    try {
+      catmotos = catmotoserv.listarCatMotos();
+      return catmotos;
+    } catch (Exception e) {return null;}    
+  } 
+
+  private ArrayList<model.Categoria.Motor> getMotorCat(){
+    ArrayList<model.Categoria.Motor> catmotor = new ArrayList<model.Categoria.Motor>();
+    MotorService catmotorserv = new MotorService();
+    try {
+      catmotor = catmotorserv.listarMotor();
+      return catmotor;
+    } catch (Exception e) {return null;}    
+  }
+
+  private DefaultListModel<model.Categoria.Acessorio> getAcessorioCat(){
+    DefaultListModel<model.Categoria.Acessorio> catacessorio = new DefaultListModel<model.Categoria.Acessorio>();
+    AcessorioService catmotorserv = new AcessorioService();
+    try {
+      catacessorio.addAll(catmotorserv.listarAcessorios());
+      return catacessorio;
+    } catch (Exception e) {return null;}    
+  }
+}
