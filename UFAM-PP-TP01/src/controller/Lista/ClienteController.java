@@ -8,9 +8,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import model.Cliente.Cliente;
-import model.Moto.Moto;
 import services.ClienteService;
-import services.MotoService;
 
 public class ClienteController extends JFrame {
   
