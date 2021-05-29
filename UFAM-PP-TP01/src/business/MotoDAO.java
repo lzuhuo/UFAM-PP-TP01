@@ -122,4 +122,14 @@ public class MotoDAO extends Config{
             return resp;
         }
     }
+
+    public Boolean removeMoto(int CD_MOTO){
+        try{
+            Statement st = conexao.createStatement();
+            String sql =    " DELETE FROM motos" +
+                            " WHERE CD_MOTO=" + CD_MOTO;
+            st.executeUpdate(sql);
+            return true;  
+        }catch( SQLException e){ return false;}
+    }
 }

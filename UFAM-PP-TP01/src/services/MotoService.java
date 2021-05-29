@@ -101,4 +101,24 @@ public class MotoService {
         }
         return messageMoto;
     }
+
+    public Boolean removeMoto(int CD_MOTO){
+        Boolean respostaMoto;
+        Boolean respostaAcessorio;
+        MotoDAO motoDAO = new MotoDAO();
+        AcessorioDAO acessorioDAO = new AcessorioDAO();
+        try {
+            respostaMoto = motoDAO.removeMoto(CD_MOTO);
+            System.out.println(respostaMoto);
+            respostaAcessorio = acessorioDAO.removeAcessorioMoto(CD_MOTO).status;  
+            if(!respostaAcessorio && !respostaMoto){
+                Exception removM = new Exception("Erro ao remover moto");
+                removM.notify();
+            }           
+        } catch (Exception e) {
+            System.out.println("errorservice: "+e);
+            return null;
+        }
+        return respostaMoto;
+    }
 }

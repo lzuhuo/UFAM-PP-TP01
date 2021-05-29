@@ -1,24 +1,47 @@
 package business;
 import java.sql.*;
+import java.util.ArrayList;
 
 import db.Config;
 import model.Cliente.Cliente;
 import model.Message;
 
 public class ClienteDAO extends Config{
-    public void listarClientes(){
+    public Cliente getCliente(int CD_CLIENTE){
+        Cliente cliente = new Cliente();
         try{
             Statement st = conexao.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM motos");
+            ResultSet rs = st.executeQuery("SELECT * FROM clientes WHERE CD_CLIENTE=" + CD_CLIENTE);
             while(rs.next()){
-                System.out.println("Moto: " + rs.getString(2) +
-                " (" + rs.getString(3) + ")" +
-                " da Yamaha " + rs.getString(4));
+                cliente =new Cliente(   rs.getInt("CD_CLIENTE"),
+                                        rs.getString("NM_CLIENTE"),
+                                        rs.getString("DT_NASCIMENTO"),
+                                        rs.getString("NR_CNH"),
+                                        rs.getString("ST_ATIVO")
+                                    );
             }
-        }catch( SQLException e){ }
+            return cliente;
+        }catch( SQLException e){return null;}
     }
 
-    public Message adicionaClientes(Cliente c){
+    public ArrayList<Cliente> listarClientes(){
+        ArrayList<Cliente> clientes =  new ArrayList<Cliente>();
+        try{
+            Statement st = conexao.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM clientes WHERE ST_ATIVO='S'");
+            while(rs.next()){
+                clientes.add(new Cliente(   rs.getInt("CD_CLIENTE"),
+                                            rs.getString("NM_CLIENTE"),
+                                            rs.getString("DT_NASCIMENTO"),
+                                            rs.getString("NR_CNH"),
+                                            rs.getString("ST_ATIVO")
+                                        ));
+            }
+            return clientes;
+        }catch( SQLException e){return null;}
+    }
+
+    public Message adicionaCliente(Cliente c){
         Message resp;
         int codigo = -1;
         try{
@@ -40,5 +63,37 @@ public class ClienteDAO extends Config{
             resp = new Message(false, "error" + e.toString(),codigo);
             return resp;
         }
+    }
+    
+    //CAC
+    public Message atualizaCliente(Cliente c){
+        Message resp;
+        int codigo = -1;
+        try{
+            Statement st = conexao.createStatement();
+            st.executeUpdate("UPDATE clientes SET " +
+                            "NM_CLIENTE='" + c.NM_CLIENTE + "', " + 
+                            "DT_NASCIMENTO='" + c.DT_NASCIMENTO + "', " + 
+                            "NR_CNH='" + c.NR_CNH + "' " + 
+                            "WHERE CD_CLIENTE=" + c.CD_CLIENTE    
+                            );
+            
+            resp = new Message(true, "success",c.CD_CLIENTE);
+            
+            return resp;
+        }catch (SQLException e) {
+            resp = new Message(false, "error:CAC" + e.toString(), codigo);
+            return resp;
+        }
+    }
+
+    public Boolean removeCliente(int CD_CLIENTE){
+        try{
+            Statement st = conexao.createStatement();
+            String sql =    " DELETE FROM clientes" +
+                            " WHERE CD_CLIENTE=" + CD_CLIENTE;
+            st.executeUpdate(sql);
+            return true;  
+        }catch( SQLException e){ return false;}
     }
 }

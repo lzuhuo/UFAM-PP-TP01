@@ -9,7 +9,6 @@ import javax.swing.table.TableModel;
 import model.Moto.Moto;
 import services.MotoService;
 
-/* HtmlDemo.java needs no other files. */
 public class MotoController extends JPanel {
   
   JLabel ds_categoria_moto_l = new JLabel("Categoria: ");
@@ -17,7 +16,6 @@ public class MotoController extends JPanel {
   JComboBox<model.Categoria.Moto> ds_categoria_moto_f;
   JPanel motoPanel = new JPanel();
   JTable motos;
-  JFrame framePanel;
   JComboBox<String> acao;
   JScrollPane sp;
   ArrayList<Moto> lstMotos;
@@ -26,13 +24,10 @@ public class MotoController extends JPanel {
   "Custo", "Ação"};
   TableModel model;
   Object[][] data;
-  //ActionListener aL;
-
   
   public MotoController() {
 
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-    framePanel = (JFrame) SwingUtilities.getWindowAncestor(this);
     lstMotos = listarMotos();    
     data = new String[lstMotos.size()][columnNames.length];
     
@@ -67,33 +62,42 @@ public class MotoController extends JPanel {
         if(COMMAND == "Editar"){
           controller.Edicao.MotoController EditarMoto = new controller.Edicao.MotoController(CD_MOTO);
           EditarMoto.CD_MOTO = CD_MOTO;
-          EditarMoto.framePai = framePanel;
           EditarMoto.setVisible(true);
-          motos.getModel().setValueAt("Selecione", tev.getFirstRow(), tev.getColumn());
+        }
+        else{
+          if(COMMAND == "Deletar"){
+            int result = JOptionPane.showConfirmDialog(null, "Certeza que deseja deletar?","Confirmação de remoção",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+            if(result == JOptionPane.YES_OPTION){
+              if(removerMoto(CD_MOTO)){
+                JOptionPane.showMessageDialog(null, "Registro deletado!");
+              }else{
+                JOptionPane.showMessageDialog(null, "Registro falhou ao ser deletado!");
+              }
+            }
+          }
         }
       }
     });
         
     sp = new JScrollPane(motos);
 
-    // ds_categoria_moto_f = new JComboBox<model.Categoria.Moto>();
-    // ds_categoria_moto_f.addItem(new model.Categoria.Moto(0,"Selecione"));
-    
     motoPanel.setLayout(null);
     motoPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory
         .createTitledBorder("Listagem de Motos"), BorderFactory
         .createEmptyBorder(10, 10, 10, 10)));
-        
-    // ds_categoria_moto_l.setBounds(20,30,120,20);
-    // motoPanel.add(ds_categoria_moto_l);    
-    // ds_categoria_moto_f.setBounds(100,30,120,20);
-    // motoPanel.add(ds_categoria_moto_f);
 
     sp.setBounds(20,60,840,300);
     motoPanel.add(sp);
 
     setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     add(motoPanel);
+  }
+
+  private Boolean removerMoto(int CD_MOTO){
+    Boolean motos = false;
+    MotoService motoService = new MotoService();
+    motos = motoService.removeMoto(CD_MOTO);
+    return motos;
   }
 
   private ArrayList<Moto> listarMotos(){

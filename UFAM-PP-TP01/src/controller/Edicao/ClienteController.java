@@ -1,9 +1,10 @@
-package controller.Cadastro;
+package controller.Edicao;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import model.Message;
+import model.Cliente.Cliente;
 import services.ClienteService;
 import util.Util;
 
@@ -21,25 +22,35 @@ public class ClienteController extends JFrame implements ActionListener {
 
   JButton saveCliente = new JButton("Salvar");
 
-  public ClienteController() {
+  public int CD_CLIENTE;
+  private Cliente cliente;
+
+  public ClienteController(int CD_CLIENTE) {
     super("Cadastro de Cliente");
     this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     this.setLayout(null);
+    this.CD_CLIENTE = CD_CLIENTE;
+
+    cliente = getCliente(this.CD_CLIENTE);
 
     setAction();
     
+    
     nm_cliente_l.setBounds(20,30,140,20);
     this.add(nm_cliente_l);    
+    nm_cliente_f.setText(cliente.NM_CLIENTE);
     nm_cliente_f.setBounds(160,30,180,20);
     this.add(nm_cliente_f);
 
     nr_cnh_l.setBounds(20,60,140,20);
     this.add(nr_cnh_l);  
+    nr_cnh_f.setText(cliente.NR_CNH);
     nr_cnh_f.setBounds(160,60,180,20);
     this.add(nr_cnh_f);  
 
     dt_nascimento_l.setBounds(20,90,140,20);
     this.add(dt_nascimento_l); 
+    dt_nascimento_f.setText(cliente.DT_NASCIMENTO);
     dt_nascimento_f.setBounds(160,90,180,20);
     this.add(dt_nascimento_f);  
 
@@ -68,25 +79,37 @@ public class ClienteController extends JFrame implements ActionListener {
 
   public void actionPerformed(ActionEvent e) {
 
-    model.Cliente.Cliente cliente = new model.Cliente.Cliente();
+    model.Cliente.Cliente cliente;
     ClienteService clienteService = new ClienteService();
-    String message = "Cliente salvo com sucesso!";
+    String message = "Cliente atualizado com sucesso!";
     Message resultado;
 
-    cliente.DT_NASCIMENTO = dt_nascimento_f.getText();
-    cliente.NM_CLIENTE = nm_cliente_f.getText();
-    cliente.NR_CNH = nr_cnh_f.getText();
-    resultado = clienteService.inserirCliente(cliente);
+    cliente = new model.Cliente.Cliente(
+                          this.CD_CLIENTE, 
+                          nm_cliente_f.getText(),
+                          dt_nascimento_f.getText(),
+                          nr_cnh_f.getText(),
+                          "S"
+                          );
+    
+    resultado = clienteService.atualizarCliente(cliente);
     
     if(resultado.status){
       JOptionPane.showMessageDialog(null, message);
     }else{
-      if(resultado.message.contains("[SQLITE_CONSTRAINT_UNIQUE]")){
-        JOptionPane.showMessageDialog(null, "Erro ao salvar cliente \nO cliente já existe na base!");
-      }else{
-        JOptionPane.showMessageDialog(null, "Erro ao salvar cliente \n" + resultado.message);
-      }
+      JOptionPane.showMessageDialog(null, "Erro ao salvar cliente \n" + resultado.message);
     }
     setVisible(false);
-  }   
+  } 
+  
+  private Cliente getCliente(int CD_CLIENTE){
+    Cliente cliente = new Cliente();
+    ClienteService clienteService = new ClienteService();
+    try {
+      cliente = clienteService.getCliente(CD_CLIENTE);
+    } catch (Exception e) {
+      cliente = null;
+    }
+    return cliente;
+  }
 }

@@ -10,7 +10,6 @@ import services.*;
 /* HtmlDemo.java needs no other files. */
 public class MotoController extends JFrame implements ActionListener {
   
-  public JFrame framePai;
   public int CD_MOTO;
   private model.Moto.Moto motoobj;
   JLabel ds_categoria_moto_l = new JLabel("Categoria: ");
@@ -214,9 +213,9 @@ public class MotoController extends JFrame implements ActionListener {
       ds_modelo_f.getText(),
       Integer.parseInt(nr_ano_f.getText()),
       categoria_motor,
-      Float.parseFloat(cp_tanque_f.getText()),
-      Float.parseFloat(av_consumo_f.getText()),
-      Float.parseFloat(vl_custo_f.getText()),
+      Float.parseFloat(cp_tanque_f.getText().replaceAll(",", ".")),
+      Float.parseFloat(av_consumo_f.getText().replaceAll(",", ".")),
+      Float.parseFloat(vl_custo_f.getText().replaceAll(",", ".")),
       Acessorios
     );
 
@@ -228,7 +227,6 @@ public class MotoController extends JFrame implements ActionListener {
     }else{
         JOptionPane.showMessageDialog(null, "Erro ao salvar cliente \n" + resultado.message);
     }
-
     this.setVisible(false);
   }
 }

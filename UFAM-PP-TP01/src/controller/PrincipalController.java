@@ -55,7 +55,6 @@ public class PrincipalController extends JFrame {
     
 	  setJMenuBar(bar);
 	  
-	  
 	  pack();
 	  setResizable(false);
 	  setSize(900, 450);
@@ -71,13 +70,19 @@ public class PrincipalController extends JFrame {
 		
 		switch (modulo) {
 			case "moto_novo":
-				getContentPane().add(new controller.Cadastro.MotoController());
+				JFrame moto_novo = new controller.Cadastro.MotoController();
+				moto_novo.setVisible(true);
 				break;
 			case "moto_lista":
 				getContentPane().add(new controller.Lista.MotoController());
 				break;
 			case "cliente_novo":
-				getContentPane().add(new controller.Cadastro.ClienteController());
+				JFrame cliente_novo = new controller.Cadastro.ClienteController();
+				cliente_novo.setVisible(true);
+				break;
+			case "cliente_lista":
+				JFrame cliente_lista = new controller.Lista.ClienteController();
+				cliente_lista.setVisible(true);
 				break;
 			default:
 				break;
