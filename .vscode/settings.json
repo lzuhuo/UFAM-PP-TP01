@@ -1,6 +1,0 @@
-{
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "UFAM-PP-TP01/lib/sqlite-jdbc-3.34.0-javadoc.jar"
-    ]
-}
