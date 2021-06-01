@@ -2,45 +2,204 @@ package controller.Cadastro;
 import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
-
-import business.ClienteDAO;
-import model.*;
-import model.Categoria.Acessorio;
 import model.Cliente.Cliente;
+import model.Moto.Moto;
+import model.Moto.Opcional;
+import model.Moto.Status;
 import services.*;
 import util.*;
 
 public class LocacaoController extends JFrame implements ActionListener {
 
+    JLabel nr_cnh_l = new JLabel("Nº CNH: ");
+    JTextField nr_cnh_f = new JTextField();  
+  
     JLabel nm_cliente_l = new JLabel("Nome Cliente: ");
     JComboBox<Cliente> nm_cliente_f;
 
-    JLabel nr_cnh_l = new JLabel("Nº CNH: ");
-    JTextField nr_cnh_f = new JTextField(8);
+    JLabel nr_idade_l = new JLabel("Idade: ");
+    JTextField nr_idade_f = new JTextField();
 
-    JLabel nr_idade_l = new JLabel("Idade");
-    JTextField nr_idade_f = new JTextField(2);
+    JLabel lc_retirada_l = new JLabel("Local Retirada: ");
+    JTextField lc_retirada_f = new JTextField();
+    
+    JLabel dt_retirada_l = new JLabel("Data Retirada: ");
+    JTextField dt_retirada_f = new JTextField();
+    
+    JLabel ds_modelo_l = new JLabel("Modelo: ");
+    JComboBox<String> ds_modelo_f;
+
+    JLabel ds_marca_l = new JLabel("Marca: ");
+    JComboBox<Moto> ds_marca_f;
+
+    JLabel ds_status_l = new JLabel("Status: ");
+    JComboBox<Status> ds_status_f;
+
+    JLabel lc_devolucao_l = new JLabel("Local Devolucao: ");
+    JTextField lc_devolucao_f = new JTextField();
+    
+    JLabel dt_devolucao_l = new JLabel("Data Devolucao: ");
+    JTextField dt_devolucao_f = new JTextField();
+
+    JLabel ds_opcionais_l = new JLabel("Opcionais: ");
+    JList<Opcional> ds_opcionais_f;  
 
   public LocacaoController(){
 
     super("Nova Locação de Motocicleta");
     this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+    JLabel vl_custo_moto_l = new JLabel("Custo Moto: ");
+    JTextField vl_custo_moto_f =  new JTextField();
+    vl_custo_moto_f.setEditable(false);
+
+    JLabel vl_custo_opcional_l = new JLabel("Custo Opcional: ");
+    JTextField vl_custo_opcional_f =  new JTextField();
+    vl_custo_opcional_f.setEditable(false);
+
+    JLabel vl_custo_total_l = new JLabel("Custo Total: ");
+    JTextField vl_custo_total_f =  new JTextField();
+    vl_custo_total_f.setEditable(false);
+
+    JLabel nr_diarias_l = new JLabel("Diárias: ");
+    JTextField nr_diarias_f =  new JTextField();
+    nr_diarias_f.setEditable(false);
+
+    JButton saveLocacao = new JButton("Salvar");
+
     nm_cliente_f = new JComboBox<Cliente>();
-        
-    nr_cnh_l.setBounds(20,30,140,20);
+    nm_cliente_f.addItem(new Cliente(0,"Selecione"));
+
+    ds_modelo_f = new JComboBox<String>();
+    ds_marca_f = new JComboBox<Moto>();
+    ds_status_f = new JComboBox<Status>();
+    ds_status_f.addItem(new Status("","Selecione"));
+    ds_status_f.addItem(new Status("A","Agendado"));
+    ds_status_f.addItem(new Status("C","Cancelado"));
+    ds_status_f.addItem(new Status("D","Devolvido"));
+    ds_status_f.addItem(new Status("R","Retirado"));
+    ds_opcionais_f = new JList<Opcional>();
+
+    //Informações Cliente
+    JLabel cliente_l = new JLabel("-- Informações do Cliente --");   
+    cliente_l.setBounds(250,0,200,20);
+    this.add(cliente_l);
+
+    nr_cnh_l.setBounds(20,30,120,20);
     this.add(nr_cnh_l);    
     nr_cnh_f.setBounds(160,30,180,20);
     this.add(nr_cnh_f);
 
-    nm_cliente_l.setBounds(20,60,140,20);
+    nm_cliente_l.setBounds(360,30,120,20);
     this.add(nm_cliente_l);  
-    nm_cliente_f.setBounds(160,60,180,20);
+    nm_cliente_f.setBounds(500,30,180,20);
     this.add(nm_cliente_f);
 
+    nr_idade_l.setBounds(20,60,120,20);
+    this.add(nr_idade_l);
+    nr_idade_f.setBounds(160,60,40,20);
+    nr_idade_f.setEditable(false);
+    this.add(nr_idade_f);
+
+    JSeparator s1 = new JSeparator();
+    s1.setOrientation(SwingConstants.HORIZONTAL);
+    s1.setBounds(20,90,680,20);
+    this.add(s1);
+
+    //Informações Data e Local da Locação
+    JLabel locacao_l = new JLabel("-- Informações da Locacao --");   
+    locacao_l.setBounds(250,100,200,20);
+    this.add(locacao_l);
+
+    dt_retirada_l.setBounds(20,120,120,20);
+    this.add(dt_retirada_l);
+    dt_retirada_f.setBounds(160,120,80,20);
+    this.add(dt_retirada_f);
+
+    lc_retirada_l.setBounds(20,150,120,20);
+    this.add(lc_retirada_l);
+    lc_retirada_f.setBounds(160,150,120,20);
+    this.add(lc_retirada_f);
+
+    dt_devolucao_l.setBounds(360,120,120,20);
+    this.add(dt_devolucao_l);
+    dt_devolucao_f.setBounds(500,120,80,20);
+    this.add(dt_devolucao_f);
+
+    lc_devolucao_l.setBounds(360,150,130,20);
+    this.add(lc_devolucao_l);
+    lc_devolucao_f.setBounds(500,150,120,20);
+    this.add(lc_devolucao_f);
+
+    JSeparator s2 = new JSeparator();
+    s2.setOrientation(SwingConstants.HORIZONTAL);
+    s2.setBounds(20,180,680,20);
+    this.add(s2);
+
+    //Informações Motocicleta
+    
+    JLabel moto_l = new JLabel("-- Informações da Moto --");   
+    moto_l.setBounds(250,190,200,20);
+    this.add(moto_l);
+
+    ds_modelo_l.setBounds(20,210,120,20);
+    this.add(ds_modelo_l);
+    ds_modelo_f.setBounds(160,210,180,20);
+    ds_modelo_f.setEditable(false);
+    this.add(ds_modelo_f);
+
+    ds_marca_l.setBounds(20,240,120,20);
+    this.add(ds_marca_l);
+    ds_marca_f.setBounds(160,240,180,20);
+    ds_marca_f.setEditable(false);
+    this.add(ds_marca_f);
+
+    ds_status_l.setBounds(360,210,120,20);
+    this.add(ds_status_l);
+    ds_status_f.setBounds(500,210,180,20);
+    ds_status_f.setEditable(false);
+    this.add(ds_status_f);
+
+    ds_opcionais_l.setBounds(360,240,120,20);
+    this.add(ds_opcionais_l);
+    ds_opcionais_f.setBounds(500,240,120,20);
+    this.add(ds_opcionais_f);
+
+    JSeparator s3 = new JSeparator();
+    s3.setOrientation(SwingConstants.HORIZONTAL);
+    s3.setBounds(20,270,680,20);
+    this.add(s3);
+
+    JLabel custos_l = new JLabel("-- Custos Gerais --");   
+    custos_l.setBounds(250,280,200,20);
+    this.add(custos_l);
+
+    vl_custo_moto_l.setBounds(20,300,120,20);
+    this.add(vl_custo_moto_l);
+    vl_custo_moto_f.setBounds(20,330,120,20);
+    this.add(vl_custo_moto_f);
+
+    vl_custo_opcional_l.setBounds(160,300,120,20);
+    this.add(vl_custo_opcional_l);
+    vl_custo_opcional_f.setBounds(160,330,120,20);
+    this.add(vl_custo_opcional_f);
+
+    vl_custo_total_l.setBounds(300,300,120,20);
+    this.add(vl_custo_total_l);
+    vl_custo_total_f.setBounds(300,330,120,20);
+    this.add(vl_custo_total_f);
+
+    nr_diarias_l.setBounds(440,300,120,20);
+    this.add(nr_diarias_l);
+    nr_diarias_f.setBounds(440,330,120,20);
+    this.add(nr_diarias_f);
+
+    saveLocacao.setBounds(580,330,120,20);
+    this.add(saveLocacao);
+    
     //Layout JFrame
     setLayout(null);
-    this.setSize(360, 200);
+    this.setSize(720, 400);
     setAction();
 
   }
@@ -62,17 +221,43 @@ public class LocacaoController extends JFrame implements ActionListener {
           JComboBox<Cliente> comboBox = (JComboBox<Cliente>) event.getSource();
           System.out.println(comboBox.getSelectedItem());
           Cliente cliente = (Cliente) comboBox.getSelectedItem();
-          nr_cnh_f.setText(cliente.NR_CNH);
-          nr_cnh_f.setEditable(false);
-          nr_idade_f.setText(calIdade(cliente.DT_NASCIMENTO));
+          if(cliente.NM_CLIENTE != "Selecione"){
+            nr_cnh_f.setText(cliente.NR_CNH);
+            nr_cnh_f.setEditable(false);
+            nr_idade_f.setText(calIdade(cliente.DT_NASCIMENTO));
+          }else{
+            nr_cnh_f.setEditable(true);
+          }
       }
     });
+
+    dt_retirada_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e) {
+      JTextField textField = (JTextField) e.getSource();
+      String text = textField.getText();
+      dt_retirada_f.setText(Util.dataFormat(text));
+    }});
+
+    lc_retirada_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e) {
+      JTextField textField = (JTextField) e.getSource();
+      String text = textField.getText().toUpperCase();
+      lc_retirada_f.setText(text);
+    }}); 
+
+    dt_devolucao_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e) {
+      JTextField textField = (JTextField) e.getSource();
+      String text = textField.getText();
+      dt_devolucao_f.setText(Util.dataFormat(text));
+    }});
+
+    lc_devolucao_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e) {
+      JTextField textField = (JTextField) e.getSource();
+      String text = textField.getText().toUpperCase();
+      lc_devolucao_f.setText(text);
+    }}); 
   }
 
-
-  //Parei aqui
   private String calIdade(String DT_NASCIMENTO) {
-    String idade = util.calIdade(DT_NASCIMENTO);
+    String idade = String.format("%d",Util.calIdade(DT_NASCIMENTO));
     return idade;
   }
 
@@ -86,7 +271,10 @@ public class LocacaoController extends JFrame implements ActionListener {
     ClienteService clienteService = new ClienteService();
     clientes = clienteService.getClientes(NR_CNH);
     return clientes;
+  } 
+
+  private ArrayList<String> getModelos(String DT_INICIO, String DT_FIM){
+    ArrayList<String> modelos = new ArrayList<String>();
+    return modelos;
   }
-  
-  
 }

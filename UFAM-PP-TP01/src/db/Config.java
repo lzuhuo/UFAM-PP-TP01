@@ -5,7 +5,7 @@ import java.sql.*;
 public class Config {
     private static String javaDB = System.getenv("PWD") + "/UFAM-PP-TP01/src/db/moto.db";
     
-    private static String url = "jdbc:sqlite:/home/oliveira/Documentos/UFAM/PP/UFAM-PP-TP01/UFAM-PP-TP01/src/db/moto.db";
+    private static String url = "jdbc:sqlite:"+ javaDB;
     protected static Connection conexao = null;
 
     public Config(){
