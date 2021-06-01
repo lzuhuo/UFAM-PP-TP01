@@ -20,10 +20,13 @@ public class Cliente {
         this.ST_ATIVO = ST_ATIVO;
     }
 
-    public String toString(){
-        String str = String.format("{'CD_CLIENTE': %d, 'NM_CLIENTE': %s, 'DT_NASCIMENTO': %s, 'NR_CNH': %s, 'ST_ATIVO': %s}",
-                                    this.CD_CLIENTE, this.NM_CLIENTE, this.DT_NASCIMENTO, this.NR_CNH, this.ST_ATIVO);
+    public Cliente(int CD_CLIENTE, String NM_CLIENTE){
+        this.CD_CLIENTE = CD_CLIENTE;
+        this.NM_CLIENTE = NM_CLIENTE;
+    }
 
+    public String toString(){
+        String str = String.format("%s", this.NM_CLIENTE);
         return str;
     }
 }

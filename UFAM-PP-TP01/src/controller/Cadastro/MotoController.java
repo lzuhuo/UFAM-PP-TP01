@@ -6,7 +6,6 @@ import model.*;
 import model.Categoria.Acessorio;
 import services.*;
 
-/* HtmlDemo.java needs no other files. */
 public class MotoController extends JFrame implements ActionListener {
   
   public JFrame framePai;

@@ -7,7 +7,6 @@ import model.Cliente.Cliente;
 import services.ClienteService;
 import util.Util;
 
-/* HtmlDemo.java needs no other files. */
 public class ClienteController extends JFrame implements ActionListener {
   
   JLabel nm_cliente_l = new JLabel("Nome Cliente: ");

@@ -39,7 +39,7 @@ public class PrincipalController extends JFrame {
 	  mi.setName("moto_lista");
 	  mi.addActionListener(l);
     
-	  //Menu Locação
+	  //Menu Cliente
 	  menu = new JMenu("Cliente");
 	  menu.setMnemonic('e');
 	  bar.add(menu);
@@ -52,6 +52,20 @@ public class PrincipalController extends JFrame {
 	  mi = menu.add(new JMenuItem("Listagem", 'm'));
 	  mi.addActionListener(l);
 	  mi.setName("cliente_lista");
+
+	  //Menu Locação
+	  menu = new JMenu("Locação");
+	  menu.setMnemonic('e');
+	  bar.add(menu);
+    
+	  //Adiconar Listener
+	  l = new EditListener();
+	  mi = menu.add(new JMenuItem("Cadastrar", 'c'));
+	  mi.addActionListener(l);
+	  mi.setName("locacao_novo");
+	  mi = menu.add(new JMenuItem("Listagem", 'm'));
+	  mi.addActionListener(l);
+	  mi.setName("locacao_lista");
     
 	  setJMenuBar(bar);
 	  
@@ -83,6 +97,14 @@ public class PrincipalController extends JFrame {
 			case "cliente_lista":
 				JFrame cliente_lista = new controller.Lista.ClienteController();
 				cliente_lista.setVisible(true);
+				break;
+			case "locacao_novo":
+				JFrame locacao_novo = new controller.Cadastro.LocacaoController();
+				locacao_novo.setVisible(true);
+				break;
+			case "locacao_lista":
+				JFrame locacao_lista = new controller.Lista.ClienteController();
+				locacao_lista.setVisible(true);
 				break;
 			default:
 				break;

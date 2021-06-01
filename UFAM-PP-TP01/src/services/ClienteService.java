@@ -18,6 +18,17 @@ public class ClienteService {
         return cliente;        
     }
 
+    public ArrayList<Cliente> getClientes(String NR_CNH){
+        ArrayList<Cliente> clientes = new ArrayList<Cliente>();
+        ClienteDAO clienteDAO = new ClienteDAO();
+        try {
+            clientes = clienteDAO.getClientes(NR_CNH);
+        } catch (Exception e) {
+            clientes = null;
+        }
+        return clientes;        
+    }
+
     public ArrayList<Cliente> listarClientes(){
         ArrayList<Cliente> clientes = new ArrayList<Cliente>();
         ClienteDAO clienteDAO = new ClienteDAO();

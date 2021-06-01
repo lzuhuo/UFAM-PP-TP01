@@ -24,6 +24,25 @@ public class ClienteDAO extends Config{
         }catch( SQLException e){return null;}
     }
 
+    public ArrayList<Cliente> getClientes(String NR_CNH){
+        ArrayList<Cliente> clientes = new ArrayList<Cliente>();
+        try{
+            Statement st = conexao.createStatement();
+            String sql =    "SELECT * FROM clientes " +
+                            "WHERE NR_CNH LIKE '%" + NR_CNH + "%' LIMIT 10";
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                clientes.add(new Cliente(   rs.getInt("CD_CLIENTE"),
+                                        rs.getString("NM_CLIENTE"),
+                                        rs.getString("DT_NASCIMENTO"),
+                                        rs.getString("NR_CNH"),
+                                        rs.getString("ST_ATIVO")
+                                    ));
+            }
+            return clientes;
+        }catch( SQLException e){return null;}
+    }
+
     public ArrayList<Cliente> listarClientes(){
         ArrayList<Cliente> clientes =  new ArrayList<Cliente>();
         try{
