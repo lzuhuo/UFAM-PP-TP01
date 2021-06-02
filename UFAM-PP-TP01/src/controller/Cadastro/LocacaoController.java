@@ -238,7 +238,6 @@ public class LocacaoController extends JFrame implements ActionListener {
       if(nr_cnh_f.getText().length() > 4){
         try {
           nm_cliente_f.removeAllItems();
-          nm_cliente_f.addItem(new Cliente(0,"Selecione"));
           ArrayList<Cliente> clientes = getClientes(nr_cnh_f.getText());
           for (Cliente cliente : clientes) {
             nm_cliente_f.addItem(cliente);
@@ -281,11 +280,14 @@ public class LocacaoController extends JFrame implements ActionListener {
       dt_devolucao_f.setText(Util.dataFormat(text));
       if(dt_devolucao_f.getText().length() == 10){
         ArrayList<String> marcas = getMarcas();
-        for (String marca : marcas) {
-          ds_marca_f.addItem(marca);
-        }
-        nr_diarias_f.setText(String.format("%d",CalcDiarias() + 1));
-        sumTotal();
+          ds_marca_f.removeAllItems();
+          
+          for (String marca : marcas) {
+            ds_marca_f.addItem(marca);
+          }
+          ds_marca_f.setSelectedIndex(-1);
+          nr_diarias_f.setText(String.format("%d",CalcDiarias() + 1));
+          sumTotal();
       }
     }});
 
@@ -297,10 +299,15 @@ public class LocacaoController extends JFrame implements ActionListener {
 
     ds_marca_f.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-        ArrayList<Moto> motos = getModelMoto();
-        for (Moto moto : motos) {
-          ds_modelo_f.addItem(moto);
-        }
+        if(ds_marca_f.getSelectedItem().toString() != "Selecione"){
+          ArrayList<Moto> motos = getModelMoto();
+          ds_modelo_f.removeAllItems();
+          
+          for (Moto moto : motos) {
+            ds_modelo_f.addItem(moto);
+          }
+          ds_modelo_f.setSelectedIndex(-1);
+        }        
       }
     });
 
@@ -412,10 +419,10 @@ public class LocacaoController extends JFrame implements ActionListener {
       0,
       moto.CD_MOTO,
       cliente.CD_CLIENTE,
-      lc_retirada_f.getText(),
       Util.dataFormatSQL(dt_retirada_f.getText()),
-      lc_devolucao_f.getText(),
+      lc_retirada_f.getText(),
       Util.dataFormatSQL(dt_devolucao_f.getText()),
+      lc_devolucao_f.getText(),
       status.ST_ATIVO,
       opcionals
     );

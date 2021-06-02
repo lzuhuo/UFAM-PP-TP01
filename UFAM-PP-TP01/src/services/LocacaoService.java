@@ -30,7 +30,7 @@ public class LocacaoService {
         ArrayList<Moto> motos = new ArrayList<Moto>();
         
         try {
-            motos = locacaoDAO.getModelMoto(DT_INICIO, DT_FIM, DS_MARCA);
+            motos = locacaoDAO.getModelMoto(Util.dataFormatSQL(DT_INICIO), Util.dataFormatSQL(DT_FIM), DS_MARCA);
         } catch (Exception e) {
             return null;
         }

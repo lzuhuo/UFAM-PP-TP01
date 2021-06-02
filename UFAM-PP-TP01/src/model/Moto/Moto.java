@@ -55,6 +55,11 @@ public class Moto {
         this.VL_CUSTO = VL_CUSTO;
     }
 
+    public Moto(int CD_MOTO, String DS_MODELO){
+        this.CD_MOTO = CD_MOTO;
+        this.DS_MODELO = DS_MODELO;
+    }
+
     
 
     public String toString(){

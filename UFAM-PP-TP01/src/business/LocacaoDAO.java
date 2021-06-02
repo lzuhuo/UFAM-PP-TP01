@@ -29,7 +29,7 @@ public class LocacaoDAO extends Config{
             while(rs.next()){
                 motos.add(rs.getString("DS_MARCA"));
             }
-            rs.close();
+            st.close();
             return motos;
         }catch( SQLException e){
             System.out.println(e);
@@ -41,16 +41,16 @@ public class LocacaoDAO extends Config{
         ArrayList<Moto> motos = new ArrayList<Moto>();
         try{
             Statement st = conexao.createStatement();
-            String sql = " SELECT * FROM motos AS MO                                          " +
-                         " WHERE MO.CD_MOTO NOT IN                                            " +
-                         " (   SELECT LO.CD_MOTO FROM locacoes AS LO                          " +
-                         "     WHERE ST_LOCACAO = 'R'                                         " +
-                         "     AND CAST('" + DT_INICIO + "' AS DATE) BETWEEN                  " +
-                         "     CAST(LO.DT_RETIRADA AS DATE) AND CAST(LO.DT_DEVOLUCAO AS DATE) " +
-                         "     AND CAST('" + DT_FIM + "' AS DATE) BETWEEN                     " +
-                         "     CAST(LO.DT_RETIRADA AS DATE) AND CAST(LO.DT_DEVOLUCAO AS DATE) " +
-                         " )   AND MO.DS_MARCA = '" + DS_MARCA + "' AND MO.ST_ATIVO='S'       " +
-                         "     GROUP BY 1 LIMIT 1        " ;
+            String sql =  " SELECT * FROM motos AS MO                                   " +
+                          " WHERE MO.CD_MOTO NOT IN                                     " +
+                          " (   SELECT LO.CD_MOTO FROM locacoes AS LO                   " +
+                          "     WHERE ST_LOCACAO = 'R'                                  " +
+                          "     AND ( (DATE('" + DT_INICIO + "') BETWEEN                " +
+                          "     DATE(LO.DT_RETIRADA) AND DATE(LO.DT_DEVOLUCAO))         " +
+                          "     OR (DATE('" + DT_FIM + "') BETWEEN                      " +
+                          "     DATE(LO.DT_RETIRADA) AND DATE(LO.DT_DEVOLUCAO)))        " +
+                          " )   AND MO.DS_MARCA = '"+ DS_MARCA + "' AND MO.ST_ATIVO='S' " +
+                          "     GROUP BY DS_MODELO                                      " ;
             
 
             ResultSet rs = st.executeQuery(sql);
@@ -59,7 +59,7 @@ public class LocacaoDAO extends Config{
                                     rs.getString("DS_MODELO"), rs.getFloat("VL_CUSTO")
                                     ));
             }
-            rs.close();
+            st.close();
             return motos;
         }catch( SQLException e){
             System.out.println(e);
