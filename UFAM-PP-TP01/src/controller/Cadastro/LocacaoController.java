@@ -1,6 +1,8 @@
 package controller.Cadastro;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Date;
+
 import javax.swing.*;
 import model.Cliente.Cliente;
 import model.Moto.Moto;
@@ -27,10 +29,10 @@ public class LocacaoController extends JFrame implements ActionListener {
     JTextField dt_retirada_f = new JTextField();
     
     JLabel ds_modelo_l = new JLabel("Modelo: ");
-    JComboBox<String> ds_modelo_f;
+    JComboBox<Moto> ds_modelo_f;
 
     JLabel ds_marca_l = new JLabel("Marca: ");
-    JComboBox<Moto> ds_marca_f;
+    JComboBox<String> ds_marca_f;
 
     JLabel ds_status_l = new JLabel("Status: ");
     JComboBox<Status> ds_status_f;
@@ -44,25 +46,27 @@ public class LocacaoController extends JFrame implements ActionListener {
     JLabel ds_opcionais_l = new JLabel("Opcionais: ");
     JList<Opcional> ds_opcionais_f;  
 
+    JLabel vl_custo_moto_l = new JLabel("Custo Moto: ");
+    JTextField vl_custo_moto_f =  new JTextField();
+    
+    JLabel vl_custo_opcional_l = new JLabel("Custo Opcional: ");
+    JTextField vl_custo_opcional_f =  new JTextField();
+    
+    JLabel vl_custo_total_l = new JLabel("Custo Total: ");
+    JTextField vl_custo_total_f =  new JTextField();
+    
+    JLabel nr_diarias_l = new JLabel("Diárias: ");
+    JTextField nr_diarias_f =  new JTextField();
+    
+
   public LocacaoController(){
 
     super("Nova Locação de Motocicleta");
     this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-    JLabel vl_custo_moto_l = new JLabel("Custo Moto: ");
-    JTextField vl_custo_moto_f =  new JTextField();
     vl_custo_moto_f.setEditable(false);
-
-    JLabel vl_custo_opcional_l = new JLabel("Custo Opcional: ");
-    JTextField vl_custo_opcional_f =  new JTextField();
     vl_custo_opcional_f.setEditable(false);
-
-    JLabel vl_custo_total_l = new JLabel("Custo Total: ");
-    JTextField vl_custo_total_f =  new JTextField();
     vl_custo_total_f.setEditable(false);
-
-    JLabel nr_diarias_l = new JLabel("Diárias: ");
-    JTextField nr_diarias_f =  new JTextField();
     nr_diarias_f.setEditable(false);
 
     JButton saveLocacao = new JButton("Salvar");
@@ -70,15 +74,21 @@ public class LocacaoController extends JFrame implements ActionListener {
     nm_cliente_f = new JComboBox<Cliente>();
     nm_cliente_f.addItem(new Cliente(0,"Selecione"));
 
-    ds_modelo_f = new JComboBox<String>();
-    ds_marca_f = new JComboBox<Moto>();
+    ds_modelo_f = new JComboBox<Moto>();
+    ds_marca_f = new JComboBox<String>();
+        
     ds_status_f = new JComboBox<Status>();
     ds_status_f.addItem(new Status("","Selecione"));
     ds_status_f.addItem(new Status("A","Agendado"));
     ds_status_f.addItem(new Status("C","Cancelado"));
     ds_status_f.addItem(new Status("D","Devolvido"));
     ds_status_f.addItem(new Status("R","Retirado"));
-    ds_opcionais_f = new JList<Opcional>();
+
+    ArrayList<Opcional> opcionais = listaOpcionais();
+    DefaultListModel<Opcional> defaultop = new DefaultListModel<Opcional>();
+    defaultop.addAll(opcionais);
+    ds_opcionais_f = new JList<Opcional>(defaultop);
+    
 
     //Informações Cliente
     JLabel cliente_l = new JLabel("-- Informações do Cliente --");   
@@ -142,17 +152,19 @@ public class LocacaoController extends JFrame implements ActionListener {
     moto_l.setBounds(250,190,200,20);
     this.add(moto_l);
 
-    ds_modelo_l.setBounds(20,210,120,20);
+    ds_marca_l.setBounds(20,210,120,20);
+    this.add(ds_marca_l);
+    ds_marca_f.setBounds(160,210,180,20);
+    ds_marca_f.setEditable(false);
+    this.add(ds_marca_f);
+
+    ds_modelo_l.setBounds(20,240,120,20);
     this.add(ds_modelo_l);
-    ds_modelo_f.setBounds(160,210,180,20);
+    ds_modelo_f.setBounds(160,240,180,20);
     ds_modelo_f.setEditable(false);
     this.add(ds_modelo_f);
 
-    ds_marca_l.setBounds(20,240,120,20);
-    this.add(ds_marca_l);
-    ds_marca_f.setBounds(160,240,180,20);
-    ds_marca_f.setEditable(false);
-    this.add(ds_marca_f);
+    
 
     ds_status_l.setBounds(360,210,120,20);
     this.add(ds_status_l);
@@ -162,44 +174,44 @@ public class LocacaoController extends JFrame implements ActionListener {
 
     ds_opcionais_l.setBounds(360,240,120,20);
     this.add(ds_opcionais_l);
-    ds_opcionais_f.setBounds(500,240,120,20);
+    ds_opcionais_f.setBounds(500,240,180,60);
     this.add(ds_opcionais_f);
 
     JSeparator s3 = new JSeparator();
     s3.setOrientation(SwingConstants.HORIZONTAL);
-    s3.setBounds(20,270,680,20);
+    s3.setBounds(20,320,680,20);
     this.add(s3);
 
     JLabel custos_l = new JLabel("-- Custos Gerais --");   
-    custos_l.setBounds(250,280,200,20);
+    custos_l.setBounds(250,330,200,20);
     this.add(custos_l);
 
-    vl_custo_moto_l.setBounds(20,300,120,20);
+    vl_custo_moto_l.setBounds(20,350,120,20);
     this.add(vl_custo_moto_l);
-    vl_custo_moto_f.setBounds(20,330,120,20);
+    vl_custo_moto_f.setBounds(20,380,120,20);
     this.add(vl_custo_moto_f);
 
-    vl_custo_opcional_l.setBounds(160,300,120,20);
+    vl_custo_opcional_l.setBounds(160,350,120,20);
     this.add(vl_custo_opcional_l);
-    vl_custo_opcional_f.setBounds(160,330,120,20);
+    vl_custo_opcional_f.setBounds(160,380,120,20);
     this.add(vl_custo_opcional_f);
 
-    vl_custo_total_l.setBounds(300,300,120,20);
+    vl_custo_total_l.setBounds(300,350,120,20);
     this.add(vl_custo_total_l);
-    vl_custo_total_f.setBounds(300,330,120,20);
+    vl_custo_total_f.setBounds(300,380,120,20);
     this.add(vl_custo_total_f);
 
-    nr_diarias_l.setBounds(440,300,120,20);
+    nr_diarias_l.setBounds(440,350,120,20);
     this.add(nr_diarias_l);
-    nr_diarias_f.setBounds(440,330,120,20);
+    nr_diarias_f.setBounds(440,380,120,20);
     this.add(nr_diarias_f);
 
-    saveLocacao.setBounds(580,330,120,20);
+    saveLocacao.setBounds(580,380,120,20);
     this.add(saveLocacao);
     
     //Layout JFrame
     setLayout(null);
-    this.setSize(720, 400);
+    this.setSize(720, 450);
     setAction();
 
   }
@@ -247,6 +259,13 @@ public class LocacaoController extends JFrame implements ActionListener {
       JTextField textField = (JTextField) e.getSource();
       String text = textField.getText();
       dt_devolucao_f.setText(Util.dataFormat(text));
+      if(dt_devolucao_f.getText().length() == 10){
+        ArrayList<String> marcas = getMarcas();
+        for (String marca : marcas) {
+          ds_marca_f.addItem(marca);
+        }
+        nr_diarias_f.setText(String.format("%d",CalcDiarias() + 1));
+      }
     }});
 
     lc_devolucao_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e) {
@@ -254,6 +273,15 @@ public class LocacaoController extends JFrame implements ActionListener {
       String text = textField.getText().toUpperCase();
       lc_devolucao_f.setText(text);
     }}); 
+
+    ds_marca_f.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        ArrayList<Moto> motos = getModelMoto();
+        for (Moto moto : motos) {
+          ds_modelo_f.addItem(moto);
+        }
+      }
+    });
   }
 
   private String calIdade(String DT_NASCIMENTO) {
@@ -273,8 +301,35 @@ public class LocacaoController extends JFrame implements ActionListener {
     return clientes;
   } 
 
-  private ArrayList<String> getModelos(String DT_INICIO, String DT_FIM){
-    ArrayList<String> modelos = new ArrayList<String>();
+  private ArrayList<Moto> getModelMoto(){
+    String DT_INICIO = dt_retirada_f.getText();
+    String DT_FIM = dt_devolucao_f.getText();
+    String DS_MARCA = ds_marca_f.getSelectedItem().toString();
+    ArrayList<Moto> modelos = new ArrayList<Moto>();
+    LocacaoService locacaoService = new LocacaoService();
+    modelos = locacaoService.getModelMoto(DT_INICIO, DT_FIM, DS_MARCA);
     return modelos;
+  }
+
+  private ArrayList<String> getMarcas(){
+    String DT_INICIO = dt_retirada_f.getText();
+    String DT_FIM = dt_devolucao_f.getText();
+    ArrayList<String> marcas = new ArrayList<String>();
+    LocacaoService locacaoService = new LocacaoService();
+    marcas = locacaoService.getDSMoto(DT_INICIO, DT_FIM);
+    return marcas;
+  }
+
+  private ArrayList<Opcional> listaOpcionais(){
+    ArrayList<Opcional> opcionais = new ArrayList<Opcional>();
+    LocacaoService locacaoService = new LocacaoService();
+    opcionais = locacaoService.listaOpcionais();
+    return opcionais;
+  }
+
+  private long CalcDiarias(){
+    String DT_INICIO = dt_retirada_f.getText();
+    String DT_FIM = dt_devolucao_f.getText();
+    return Util.diffDates(DT_INICIO, DT_FIM);
   }
 }

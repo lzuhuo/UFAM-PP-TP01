@@ -183,7 +183,7 @@ public class MotoController extends JFrame implements ActionListener {
   public void actionPerformed(ActionEvent e) {
 
     MotoService motoserv = new MotoService();
-    String message = "Cliente atualizado com sucesso!";
+    String message = "Cadastro atualizado com sucesso!";
     Message resultado;
     model.Categoria.Moto categoria_moto = new model.Categoria.Moto(0, "");
     model.Categoria.Motor categoria_motor = new model.Categoria.Motor(0, "");;

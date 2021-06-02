@@ -1,6 +1,8 @@
 package util;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 public abstract class Util {
     public static String dataFormat(String textData) {
@@ -35,5 +37,15 @@ public abstract class Util {
         age = (int) ChronoUnit.YEARS.between(LocalDate.of(Integer.parseInt(da[2]), 
         Integer.parseInt(da[1]), Integer.parseInt(da[0])), LocalDate.now());
         return age;
+    }
+
+    public static long diffDates(String DT_INICIO, String DT_FIM){
+        String d1[] = DT_INICIO.split("/");
+        String d2[] = DT_FIM.split("/");
+        LocalDate from = LocalDate.of(Integer.parseInt(d1[2]),Integer.parseInt(d1[1]),Integer.parseInt(d1[0]));
+        LocalDate to = LocalDate.of(Integer.parseInt(d2[2]),Integer.parseInt(d2[1]),Integer.parseInt(d2[0]));
+        
+        long result = ChronoUnit.DAYS.between(from, to);
+        return result;
     }
 }

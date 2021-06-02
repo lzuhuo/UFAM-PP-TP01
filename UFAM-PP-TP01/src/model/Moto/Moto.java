@@ -48,14 +48,16 @@ public class Moto {
         this.Acessorios = moto.Acessorios;
     }
 
+    public Moto(int CD_MOTO, String DS_MARCA, String DS_MODELO, float VL_CUSTO){
+        this.CD_MOTO = CD_MOTO;
+        this.DS_MARCA = DS_MARCA;
+        this.DS_MODELO = DS_MODELO;
+        this.VL_CUSTO = VL_CUSTO;
+    }
+
     
 
     public String toString(){
-        return String.format("{'DS_CATEGORIA': %s,'DS_MARCA': %s, 'DS_MODELO': %s, " +
-                             "'NR_ANO': %d, 'TP_MOTOR': %s, 'CP_TANQUE': %f, " +
-                             "'AV_CONSUMO': %f, 'VL_CUSTO': %f, 'ST_ATIVO': %s,'Acessorios': [%s]}",
-                             this.CATMOTO, this.DS_MARCA, this.DS_MODELO, this.NR_ANO, this.TP_MOTOR, 
-                             this.CP_TANQUE, this.AV_CONSUMO, this.VL_CUSTO, this.ST_ATIVO, this.Acessorios
-                             );
+        return String.format("%s", this.DS_MODELO);
     }
 }

@@ -36,7 +36,7 @@ public class MotoDAO extends Config{
     }
 
     public ArrayList<Moto> listarMotos(){
-        ArrayList<Moto> catMotos = new ArrayList<Moto>();
+        ArrayList<Moto> motos = new ArrayList<Moto>();
         try{
             Statement st = conexao.createStatement();
             String sql =    " SELECT *                              " +
@@ -50,7 +50,7 @@ public class MotoDAO extends Config{
             ResultSet rs = st.executeQuery(sql);
             
             while (rs.next()) {
-                catMotos.add(new Moto(  rs.getInt("CD_MOTO"), 
+                motos.add(new Moto(  rs.getInt("CD_MOTO"), 
                                         new model.Categoria.Moto(rs.getInt("CD_CATEGORIA"), rs.getString("DS_CATEGORIA")),
                                         rs.getString("DS_MARCA"), rs.getString("DS_MODELO"), rs.getInt("NR_ANO"),
                                         new model.Categoria.Motor(rs.getInt("CD_MOTOR"),rs.getString("DS_MOTOR")),
@@ -58,7 +58,7 @@ public class MotoDAO extends Config{
                                         new ArrayList<Acessorio>()
                                     ));
             }
-            return catMotos;  
+            return motos;  
         }catch( SQLException e){ return null;}
     }
 

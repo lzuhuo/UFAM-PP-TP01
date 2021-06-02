@@ -3,75 +3,88 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import db.Config;
-import model.Message;
+import model.Categoria.Acessorio;
 import model.Moto.Moto;
+import model.Moto.Opcional;
 
 public class LocacaoDAO extends Config{
-    
+
     public ArrayList<String> getDSMoto(String DT_INICIO, String DT_FIM){
-        ArrayList<String> resp = new ArrayList<String>();
+        ArrayList<String> motos = new ArrayList<String>();
         try{
             Statement st = conexao.createStatement();
-            String sql =" -------------- CONSULTA DE MOTOS SEM AGENDAMENTO -------------- " +
-                        " SELECT MO.* FROM locacoes AS LO                                 " +
-                        " INNER JOIN motos AS MO ON MO.CD_MOTO = LO.CD_MOTO               " +
-                        " WHERE LO.ST_LOCACAO <> 'R'                                      " +
-                        " AND CAST('" + DT_INICIO + "' AS DATE) NOT BETWEEN               " +
-                        " CAST(LO.DT_RETIRADA AS DATE) AND CAST(LO.DT_DEVOLUCAO AS DATE)  " +
-                        " AND CAST('" + DT_FIM + "' AS DATE) NOT BETWEEN                  " +
-                        " CAST(LO.DT_RETIRADA AS DATE) AND CAST(LO.DT_DEVOLUCAO AS DATE)  " ;
+            String sql = " SELECT MO.DS_MARCA FROM motos AS MO                                " +
+                         " WHERE MO.CD_MOTO NOT IN                                            " +
+                         " (   SELECT LO.CD_MOTO FROM locacoes AS LO                          " +
+                         "     WHERE ST_LOCACAO = 'R'                                         " +
+                         "     AND CAST('" + DT_INICIO + "' AS DATE) BETWEEN                  " +
+                         "     CAST(LO.DT_RETIRADA AS DATE) AND CAST(LO.DT_DEVOLUCAO AS DATE) " +
+                         "     AND CAST('" + DT_FIM + "' AS DATE) BETWEEN                     " +
+                         "     CAST(LO.DT_RETIRADA AS DATE) AND CAST(LO.DT_DEVOLUCAO AS DATE) " +
+                         " )   AND MO.ST_ATIVO='S' GROUP BY 1                                 " ;
+            
 
-            st.executeQuery(sql);
-            ResultSet rs = st.getGeneratedKeys();
-            if (rs.next()) {
-                resp.add(rs.getString("DS_MARCA"));
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                motos.add(rs.getString("DS_MARCA"));
             }
-            
             rs.close();
-            return resp;
-        }catch (SQLException e) {
-            resp = null;
-            return resp;
+            return motos;
+        }catch( SQLException e){
+            System.out.println(e);
+            return null;
         }
     }
 
-    //CAM
-    public Message atualizaMoto(Moto m){
-        Message resp;
-        int codigo = -1;
+    public ArrayList<Moto> getModelMoto(String DT_INICIO, String DT_FIM, String DS_MARCA){
+        ArrayList<Moto> motos = new ArrayList<Moto>();
         try{
-            System.out.println(m.toString());
             Statement st = conexao.createStatement();
-            st.executeUpdate("UPDATE motos SET " +
-                            "CD_MOTO=" + m.CD_MOTO + ", " + 
-                            "CD_CATEGORIA=" + m.CATMOTO.CD_CATEGORIA + ", " + 
-                            "DS_MARCA='" + m.DS_MARCA + "', " + 
-                            "DS_MODELO='" + m.DS_MODELO + "', " + 
-                            "NR_ANO=" + m.NR_ANO + ", " + 
-                            "CD_MOTOR=" + m.TP_MOTOR.CD_MOTOR + ", " + 
-                            "CP_TANQUE=" + m.CP_TANQUE + ", " + 
-                            "AV_CONSUMO=" + m.AV_CONSUMO + ", " +
-                            "VL_CUSTO=" + m.VL_CUSTO + ", " + 
-                            "ST_ATIVO='" + m.ST_ATIVO + "' " + 
-                            "WHERE CD_MOTO=" + m.CD_MOTO    
-                            );
+            String sql = " SELECT * FROM motos AS MO                                          " +
+                         " WHERE MO.CD_MOTO NOT IN                                            " +
+                         " (   SELECT LO.CD_MOTO FROM locacoes AS LO                          " +
+                         "     WHERE ST_LOCACAO = 'R'                                         " +
+                         "     AND CAST('" + DT_INICIO + "' AS DATE) BETWEEN                  " +
+                         "     CAST(LO.DT_RETIRADA AS DATE) AND CAST(LO.DT_DEVOLUCAO AS DATE) " +
+                         "     AND CAST('" + DT_FIM + "' AS DATE) BETWEEN                     " +
+                         "     CAST(LO.DT_RETIRADA AS DATE) AND CAST(LO.DT_DEVOLUCAO AS DATE) " +
+                         " )   AND MO.DS_MARCA = '" + DS_MARCA + "' AND MO.ST_ATIVO='S'       " +
+                         "     GROUP BY 1 LIMIT 1        " ;
             
-            resp = new Message(true, "success",m.CD_MOTO );
-            
-            return resp;
-        }catch (SQLException e) {
-            resp = new Message(false, "error:CAM" + e.toString(), codigo);
-            return resp;
+
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                motos.add(new Moto( rs.getInt("CD_MOTO"), rs.getString("DS_MARCA"), 
+                                    rs.getString("DS_MODELO"), rs.getFloat("VL_CUSTO")
+                                    ));
+            }
+            rs.close();
+            return motos;
+        }catch( SQLException e){
+            System.out.println(e);
+            return null;
         }
     }
 
-    public Boolean removeMoto(int CD_MOTO){
+    public ArrayList<Opcional> listaOpcionais(){
+        ArrayList<Opcional> opcionais = new ArrayList<Opcional>();
         try{
             Statement st = conexao.createStatement();
-            String sql =    " DELETE FROM motos" +
-                            " WHERE CD_MOTO=" + CD_MOTO;
-            st.executeUpdate(sql);
-            return true;  
-        }catch( SQLException e){ return false;}
+            String sql = " SELECT * FROM opcionais " +
+                         " WHERE ST_ATIVO = 'S' " ;
+            
+
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                opcionais.add(new Opcional( rs.getInt("CD_OPCIONAL"), rs.getString("DS_OPCIONAL"), 
+                                    rs.getString("VL_OPCIONAL")
+                                    ));
+            }
+            rs.close();
+            return opcionais;
+        }catch( SQLException e){
+            System.out.println(e);
+            return null;
+        }
     }
 }

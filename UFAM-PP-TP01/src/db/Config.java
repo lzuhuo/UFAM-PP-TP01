@@ -26,8 +26,8 @@ public class Config {
 
     public static boolean desconecta(){
         try{
-            conexao.close();
             System.out.println("Desconexao com sucesso!");
+            conexao.close();
             return true;
         }catch (SQLException e){
             System.out.println("Desconexao falhou!");
