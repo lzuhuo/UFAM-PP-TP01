@@ -103,7 +103,7 @@ public class PrincipalController extends JFrame {
 				locacao_novo.setVisible(true);
 				break;
 			case "locacao_lista":
-				JFrame locacao_lista = new controller.Lista.ClienteController();
+				JFrame locacao_lista = new controller.Lista.LocacaoController();
 				locacao_lista.setVisible(true);
 				break;
 			default:

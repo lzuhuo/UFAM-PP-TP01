@@ -2,36 +2,48 @@ package model.Moto;
 
 import java.util.ArrayList;
 
+import model.Cliente.Cliente;
+
 public class Locacao {
-    public int    CD_LOCACAO;
-    public int    CD_MOTO;
-    public int    CD_CLIENTE;
+    public int CD_LOCACAO;
+    public Moto moto;
+    public Cliente cliente;
     public String DT_RETIRADA;
     public String LC_RETIRADA;
     public String DT_DEVOLUCAO;
     public String LC_DEVOLUCAO;
-    public String ST_LOCACAO;
+    public Status status;
+    public Float VL_TOTAL;
     public ArrayList<Opcional> opcional;
 
     public Locacao(
-        int    CD_LOCACAO,
-        int    CD_MOTO,
-        int    CD_CLIENTE,
+        int CD_LOCACAO,
+        Moto moto,
+        Cliente cliente,
         String DT_RETIRADA,
         String LC_RETIRADA,
         String DT_DEVOLUCAO,
         String LC_DEVOLUCAO,
-        String ST_LOCACAO,
+        Status status,
+        Float VL_TOTAL,
         ArrayList<Opcional> opcional
     ){
         this.CD_LOCACAO = CD_LOCACAO;
-        this.CD_MOTO = CD_MOTO;
-        this.CD_CLIENTE = CD_CLIENTE;
+        this.moto = moto;
+        this.cliente = cliente;
         this.DT_RETIRADA = DT_RETIRADA;
         this.LC_RETIRADA = LC_RETIRADA;
         this.DT_DEVOLUCAO = DT_DEVOLUCAO;
         this.LC_DEVOLUCAO = LC_DEVOLUCAO;
-        this.ST_LOCACAO = ST_LOCACAO;
+        this.status = status;
+        this.VL_TOTAL = VL_TOTAL;
+        this.opcional = opcional;
+    }
+    
+    public Locacao(int CD_LOCACAO, Status status, Float VL_TOTAL, ArrayList<Opcional> opcional){
+        this.CD_LOCACAO = CD_LOCACAO;
+        this.status = status;
+        this.VL_TOTAL = VL_TOTAL;
         this.opcional = opcional;
     }
 }

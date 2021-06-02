@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 import db.Config;
 import model.Message;
+import model.Cliente.Cliente;
 import model.Moto.Locacao;
 import model.Moto.Moto;
 import model.Moto.Opcional;
+import model.Moto.Status;
 
 public class LocacaoDAO extends Config{
 
@@ -89,19 +91,88 @@ public class LocacaoDAO extends Config{
         }
     }
 
+    public ArrayList<Locacao> listaLocacoes(){
+        ArrayList<Locacao> opcionais = new ArrayList<Locacao>();
+        try{
+            Statement st = conexao.createStatement();
+            String sql = " SELECT * FROM locacoes as LO " +
+                         " INNER JOIN motos as MO " +
+                         " ON MO.CD_MOTO = LO.CD_MOTO " +
+                         " INNER JOIN clientes as CI " +
+                         " ON CI.CD_CLIENTE = LO.CD_CLIENTE " +
+                         " INNER JOIN locacoes_status AS LS " +
+                         " ON LS.ST_LOCACAO = LO.ST_LOCACAO " +
+                         " WHERE LO.ST_LOCACAO = 'R'            " ;
+
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                opcionais.add(new Locacao( rs.getInt("CD_LOCACAO"), 
+                                            new Moto(rs.getInt("CD_MOTO"),rs.getString("DS_MODELO")), 
+                                            new Cliente(rs.getInt("CD_CLIENTE"),rs.getString("NM_CLIENTE")), 
+                                            rs.getString("DT_RETIRADA"), rs.getString("LC_RETIRADA"), 
+                                            rs.getString("DT_DEVOLUCAO"), rs.getString("LC_DEVOLUCAO"), 
+                                            new Status(rs.getString("ST_LOCACAO"), rs.getString("DS_LOCACAO")),
+                                            rs.getFloat("VL_TOTAL"),                                            
+                                            new ArrayList<Opcional>()
+                                    ));
+            }
+            rs.close();
+            return opcionais;
+        }catch( SQLException e){
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    public Locacao getLocacao(int CD_LOCACAO){
+        Locacao locacao = new Locacao();
+        
+        try {
+            Statement st = conexao.createStatement();
+            String sql = " SELECT * FROM locacoes as LO " +
+                        " INNER JOIN motos as MO " +
+                        " ON MO.CD_MOTO = LO.CD_MOTO " +
+                        " INNER JOIN clientes as CI " +
+                        " ON CI.CD_CLIENTE = LO.CD_CLIENTE " +
+                        " INNER JOIN locacoes_status AS LS " +
+                        " ON LS.ST_LOCACAO = LO.ST_LOCACAO " +
+                        " WHERE LO.ST_LOCACAO = 'R'        " +
+                        " AND LO.CD_LOCACAO=" + CD_LOCACAO   +
+                        " LIMIT 1";
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                locacao = new Locacao( rs.getInt("CD_LOCACAO"), 
+                                            new Moto(rs.getInt("CD_MOTO"),rs.getString("DS_MODELO")), 
+                                            new Cliente(rs.getInt("CD_CLIENTE"),rs.getString("NM_CLIENTE")), 
+                                            rs.getString("DT_RETIRADA"), rs.getString("LC_RETIRADA"), 
+                                            rs.getString("DT_DEVOLUCAO"), rs.getString("LC_DEVOLUCAO"), 
+                                            new Status(rs.getString("ST_LOCACAO"), rs.getString("DS_LOCACAO")),
+                                            rs.getFloat("VL_TOTAL"),                                            
+                                            new ArrayList<Opcional>()
+                                    );
+            }
+            rs.close();
+            return locacao;
+        } catch (SQLException e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
     public Message adicionaLocacao(Locacao l){
         Message resp;
         int codigo = -1;
         try{
             Statement st = conexao.createStatement();
             st.executeUpdate("INSERT INTO locacoes VALUES (NULL ," +
-                            "" + l.CD_MOTO + "," + 
-                            "" + l.CD_CLIENTE + "," + 
+                            "" + l.moto.CD_MOTO + "," + 
+                            "" + l.cliente.CD_CLIENTE + "," + 
                             "'" + l.DT_RETIRADA + "'," + 
                             "'" + l.LC_RETIRADA + "'," + 
                             "'" + l.DT_DEVOLUCAO + "'," + 
                             "'" + l.LC_DEVOLUCAO + "'," + 
-                            "'" + l.ST_LOCACAO + "'" + 
+                            "'" + l.status.ST_LOCACAO + "'," + 
+                            "" + l.VL_TOTAL + "" + 
                             ")"    
                             );
             ResultSet rs = st.getGeneratedKeys();

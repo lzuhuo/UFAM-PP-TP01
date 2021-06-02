@@ -22,6 +22,11 @@ public abstract class Util {
         return value[2]+"-"+value[1]+"-"+value[0];
     }
 
+    public static String dataFormatSQLReverse(String textData) {
+        String value[] = textData.split("-");
+        return value[2]+"/"+value[1]+"/"+value[0];
+    }
+
     public static int calIdade(String dateNasc){
         int age = 0; 
         String da[] = dateNasc.split("/");

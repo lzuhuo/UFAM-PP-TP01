@@ -48,6 +48,28 @@ public class LocacaoService {
         return opcionais;
     }
 
+    public ArrayList<Locacao> listaLocacoes(){
+        ArrayList<Locacao> locacoes = new ArrayList<Locacao>();
+
+        try {
+            locacoes = locacaoDAO.listaLocacoes();
+        } catch (Exception e) {
+            return null;
+        }
+        return locacoes;
+    }
+
+    public Locacao getLocacao(int CD_LOCACAO){
+        Locacao locacao;
+
+        try {
+            locacao = locacaoDAO.getLocacao(CD_LOCACAO);
+        } catch (Exception e) {
+            return null;
+        }
+        return locacao;
+    }
+
     public Message adicionaLocacao(Locacao l){
         Message message;
 

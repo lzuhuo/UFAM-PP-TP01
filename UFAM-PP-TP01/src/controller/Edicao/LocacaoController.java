@@ -1,4 +1,5 @@
-package controller.Cadastro;
+package controller.Edicao;
+
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -19,9 +20,9 @@ public class LocacaoController extends JFrame implements ActionListener {
 
     JLabel nr_cnh_l = new JLabel("Nº CNH: ");
     JTextField nr_cnh_f = new JTextField();  
-  
+      
     JLabel nm_cliente_l = new JLabel("Nome Cliente: ");
-    JComboBox<Cliente> nm_cliente_f;
+    JTextField nm_cliente_f = new JTextField();
 
     JLabel nr_idade_l = new JLabel("Idade: ");
     JTextField nr_idade_f = new JTextField();
@@ -33,13 +34,13 @@ public class LocacaoController extends JFrame implements ActionListener {
     JTextField dt_retirada_f = new JTextField();
     
     JLabel ds_modelo_l = new JLabel("Modelo: ");
-    JComboBox<Moto> ds_modelo_f;
+    JTextField ds_modelo_f = new JTextField();
 
     JLabel ds_marca_l = new JLabel("Marca: ");
-    JComboBox<String> ds_marca_f;
+    JTextField ds_marca_f = new JTextField();
 
     JLabel ds_status_l = new JLabel("Status: ");
-    JComboBox<Status> ds_status_f;
+    JComboBox<Status> ds_status_f = new JComboBox<Status>();
 
     JLabel lc_devolucao_l = new JLabel("Local Devolucao: ");
     JTextField lc_devolucao_f = new JTextField();
@@ -63,25 +64,28 @@ public class LocacaoController extends JFrame implements ActionListener {
     JTextField nr_diarias_f =  new JTextField();
 
     JButton saveLocacao;
+
+    public int CD_LOCACAO;
+
+    ArrayList<Locacao> lstLocacoes;
     
 
-  public LocacaoController(){
+  public LocacaoController(int CD_LOCACAO){
 
     super("Nova Locação de Motocicleta");
     this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+    this.CD_LOCACAO = CD_LOCACAO;
+    lstLocacoes = listaLocacoes();   
+
+    //Relatórios
     vl_custo_moto_f.setEditable(false);
     vl_custo_opcional_f.setEditable(false);
     vl_custo_total_f.setEditable(false);
     nr_diarias_f.setEditable(false);
 
-    saveLocacao = new JButton("Salvar");
+    saveLocacao = new JButton("Atualizar");
 
-    nm_cliente_f = new JComboBox<Cliente>();
-    
-    ds_modelo_f = new JComboBox<Moto>();
-    ds_marca_f = new JComboBox<String>();
-        
     ds_status_f = new JComboBox<Status>();
     ds_status_f.addItem(new Status("","Selecione"));
     ds_status_f.addItem(new Status("A","Agendado"));
@@ -102,11 +106,13 @@ public class LocacaoController extends JFrame implements ActionListener {
     nr_cnh_l.setBounds(20,30,120,20);
     this.add(nr_cnh_l);    
     nr_cnh_f.setBounds(160,30,180,20);
+    nr_cnh_f.setEditable(false);
     this.add(nr_cnh_f);
 
     nm_cliente_l.setBounds(360,30,120,20);
     this.add(nm_cliente_l);  
     nm_cliente_f.setBounds(500,30,180,20);
+    nm_cliente_f.setEditable(false);
     this.add(nm_cliente_f);
 
     nr_idade_l.setBounds(20,60,120,20);
@@ -128,21 +134,25 @@ public class LocacaoController extends JFrame implements ActionListener {
     lc_retirada_l.setBounds(20,120,120,20);
     this.add(lc_retirada_l);
     lc_retirada_f.setBounds(160,120,80,20);
+    lc_retirada_f.setEditable(false);
     this.add(lc_retirada_f);
 
     lc_devolucao_l.setBounds(360,120,130,20);
     this.add(lc_devolucao_l);
     lc_devolucao_f.setBounds(500,120,80,20);
+    lc_devolucao_f.setEditable(false);
     this.add(lc_devolucao_f);
 
     dt_retirada_l.setBounds(20,150,120,20);
     this.add(dt_retirada_l);
     dt_retirada_f.setBounds(160,150,120,20);
+    dt_retirada_f.setEditable(false);
     this.add(dt_retirada_f);
 
     dt_devolucao_l.setBounds(360,150,130,20);
     this.add(dt_devolucao_l);
     dt_devolucao_f.setBounds(500,150,120,20);
+    dt_devolucao_f.setEditable(false);
     this.add(dt_devolucao_f);
 
     JSeparator s2 = new JSeparator();
@@ -235,89 +245,6 @@ public class LocacaoController extends JFrame implements ActionListener {
   }
 
   private void setAction(){
-    nr_cnh_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e1) {
-      if(nr_cnh_f.getText().length() > 4){
-        try {
-          nm_cliente_f.removeAllItems();
-          ArrayList<Cliente> clientes = getClientes(nr_cnh_f.getText());
-          for (Cliente cliente : clientes) {
-            nm_cliente_f.addItem(cliente);
-          }
-        } catch (Exception e) {
-          nm_cliente_f.removeAllItems();
-        }
-      }
-    }}); 
-    
-    nm_cliente_f.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-          Cliente cliente = (Cliente) nm_cliente_f.getSelectedItem();
-          if(cliente.CD_CLIENTE != 0){
-            nr_cnh_f.setText(cliente.NR_CNH);
-            nr_cnh_f.setEditable(false);
-            nr_idade_f.setText(calIdade(cliente.DT_NASCIMENTO));
-          }else{
-            nr_cnh_f.setEditable(true);
-          }
-      }
-    });
-
-    dt_retirada_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e) {
-      JTextField textField = (JTextField) e.getSource();
-      String text = textField.getText();
-      dt_retirada_f.setText(Util.dataFormat(text));
-      dt_devolucao_f.setText("");
-    }});
-
-    lc_retirada_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e) {
-      JTextField textField = (JTextField) e.getSource();
-      String text = textField.getText().toUpperCase();
-      lc_retirada_f.setText(text);
-    }}); 
-
-    dt_devolucao_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e) {
-      JTextField textField = (JTextField) e.getSource();
-      String text = textField.getText();
-      dt_devolucao_f.setText(Util.dataFormat(text));
-      if(dt_devolucao_f.getText().length() == 10){
-        nr_diarias_f.setText(String.format("%d",CalcDiarias() + 1));
-        sumTotal();
-        ArrayList<String> marcas = getMarcas();
-        ds_marca_f.removeAllItems();
-        for (String marca : marcas) {
-          ds_marca_f.addItem(marca);
-        }  
-      }
-    }});
-
-    lc_devolucao_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e) {
-      JTextField textField = (JTextField) e.getSource();
-      String text = textField.getText().toUpperCase();
-      lc_devolucao_f.setText(text);
-    }}); 
-
-    ds_marca_f.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        if(ds_marca_f.getSelectedItem().toString() != "Selecione"){
-          ArrayList<Moto> motos = getModelMoto();
-          ds_modelo_f.removeAllItems();
-          
-          for (Moto moto : motos) {
-            ds_modelo_f.addItem(moto);
-          }
-          ds_modelo_f.setSelectedIndex(-1);
-        }        
-      }
-    });
-
-    ds_modelo_f.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-        Moto moto = (Moto) ds_modelo_f.getSelectedItem();
-        vl_custo_moto_f.setText(String.format("%.2f",moto.VL_CUSTO));
-        sumTotal();
-      }
-    });
-
     ds_opcionais_f.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent evt) {
         try {
@@ -351,25 +278,6 @@ public class LocacaoController extends JFrame implements ActionListener {
     return clientes;
   } 
 
-  private ArrayList<Moto> getModelMoto(){
-    String DT_INICIO = dt_retirada_f.getText();
-    String DT_FIM = dt_devolucao_f.getText();
-    String DS_MARCA = ds_marca_f.getSelectedItem().toString();
-    ArrayList<Moto> modelos = new ArrayList<Moto>();
-    LocacaoService locacaoService = new LocacaoService();
-    modelos = locacaoService.getModelMoto(DT_INICIO, DT_FIM, DS_MARCA);
-    return modelos;
-  }
-
-  private ArrayList<String> getMarcas(){
-    String DT_INICIO = dt_retirada_f.getText();
-    String DT_FIM = dt_devolucao_f.getText();
-    ArrayList<String> marcas = new ArrayList<String>();
-    LocacaoService locacaoService = new LocacaoService();
-    marcas = locacaoService.getDSMoto(DT_INICIO, DT_FIM);
-    return marcas;
-  }
-
   private ArrayList<Opcional> listaOpcionais(){
     ArrayList<Opcional> opcionais = new ArrayList<Opcional>();
     LocacaoService locacaoService = new LocacaoService();
@@ -401,12 +309,17 @@ public class LocacaoController extends JFrame implements ActionListener {
     vl_custo_total_f.setText(String.format("%.2f",sum));
   }
 
+  private ArrayList<Locacao> listaLocacoes(){
+    ArrayList<Locacao> locacoes;
+    LocacaoService locacaoService = new LocacaoService();
+    locacoes = locacaoService.listaLocacoes(this.CD_LOCACAO);
+    return locacoes;
+  }
+
   
   public void actionPerformed(ActionEvent e) {
     LocacaoService locacaoService = new LocacaoService();
     Message resultado;
-    Moto moto = (Moto) ds_modelo_f.getSelectedItem();
-    Cliente cliente = (Cliente) nm_cliente_f.getSelectedItem();
     Status status = (Status) ds_status_f.getSelectedItem();
     ArrayList<Opcional> opcionals = new ArrayList<Opcional>();
     Float total = Float.parseFloat(vl_custo_total_f.getText());
@@ -415,23 +328,12 @@ public class LocacaoController extends JFrame implements ActionListener {
       opcionals.add(opcional);
     }
 
-    Locacao locacao = new Locacao(
-      0,
-      moto,
-      cliente,
-      Util.dataFormatSQL(dt_retirada_f.getText()),
-      lc_retirada_f.getText(),
-      Util.dataFormatSQL(dt_devolucao_f.getText()),
-      lc_devolucao_f.getText(),
-      status,
-      total,
-      opcionals
-    );
+    Locacao locacao = new Locacao(0, status, total, opcionals);
 
     resultado = locacaoService.adicionaLocacao(locacao);
 
     if(resultado.status){
-      JOptionPane.showMessageDialog(null, "Locação criada com sucesso!");
+      JOptionPane.showMessageDialog(null, "Locação atualizada com sucesso!");
     }else{
         JOptionPane.showMessageDialog(null, "Erro ao salvar cliente \n" + resultado.message);
     }
