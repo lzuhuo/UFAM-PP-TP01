@@ -6,7 +6,9 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import model.Message;
 import model.Cliente.Cliente;
+import model.Moto.Locacao;
 import model.Moto.Moto;
 import model.Moto.Opcional;
 import model.Moto.Status;
@@ -59,6 +61,8 @@ public class LocacaoController extends JFrame implements ActionListener {
     
     JLabel nr_diarias_l = new JLabel("Diárias: ");
     JTextField nr_diarias_f =  new JTextField();
+
+    JButton saveLocacao;
     
 
   public LocacaoController(){
@@ -71,11 +75,10 @@ public class LocacaoController extends JFrame implements ActionListener {
     vl_custo_total_f.setEditable(false);
     nr_diarias_f.setEditable(false);
 
-    JButton saveLocacao = new JButton("Salvar");
+    saveLocacao = new JButton("Salvar");
 
     nm_cliente_f = new JComboBox<Cliente>();
-    nm_cliente_f.addItem(new Cliente(0,"Selecione"));
-
+    
     ds_modelo_f = new JComboBox<Moto>();
     ds_marca_f = new JComboBox<String>();
         
@@ -91,7 +94,6 @@ public class LocacaoController extends JFrame implements ActionListener {
     defaultop.addAll(opcionais);
     ds_opcionais_f = new JList<Opcional>(defaultop);
     
-
     //Informações Cliente
     JLabel cliente_l = new JLabel("-- Informações do Cliente --");   
     cliente_l.setBounds(250,0,200,20);
@@ -123,25 +125,25 @@ public class LocacaoController extends JFrame implements ActionListener {
     locacao_l.setBounds(250,100,200,20);
     this.add(locacao_l);
 
-    dt_retirada_l.setBounds(20,120,120,20);
-    this.add(dt_retirada_l);
-    dt_retirada_f.setBounds(160,120,80,20);
-    this.add(dt_retirada_f);
-
-    lc_retirada_l.setBounds(20,150,120,20);
+    lc_retirada_l.setBounds(20,120,120,20);
     this.add(lc_retirada_l);
-    lc_retirada_f.setBounds(160,150,120,20);
+    lc_retirada_f.setBounds(160,120,80,20);
     this.add(lc_retirada_f);
 
-    dt_devolucao_l.setBounds(360,120,120,20);
-    this.add(dt_devolucao_l);
-    dt_devolucao_f.setBounds(500,120,80,20);
-    this.add(dt_devolucao_f);
-
-    lc_devolucao_l.setBounds(360,150,130,20);
+    lc_devolucao_l.setBounds(360,120,130,20);
     this.add(lc_devolucao_l);
-    lc_devolucao_f.setBounds(500,150,120,20);
+    lc_devolucao_f.setBounds(500,120,80,20);
     this.add(lc_devolucao_f);
+
+    dt_retirada_l.setBounds(20,150,120,20);
+    this.add(dt_retirada_l);
+    dt_retirada_f.setBounds(160,150,120,20);
+    this.add(dt_retirada_f);
+
+    dt_devolucao_l.setBounds(360,150,130,20);
+    this.add(dt_devolucao_l);
+    dt_devolucao_f.setBounds(500,150,120,20);
+    this.add(dt_devolucao_f);
 
     JSeparator s2 = new JSeparator();
     s2.setOrientation(SwingConstants.HORIZONTAL);
@@ -187,6 +189,7 @@ public class LocacaoController extends JFrame implements ActionListener {
     this.add(custos_l);
 
     vl_custo_moto_l.setBounds(20,350,120,20);
+    vl_custo_moto_l.setText("0.00");
     this.add(vl_custo_moto_l);
     vl_custo_moto_f.setBounds(20,380,120,20);
     this.add(vl_custo_moto_f);
@@ -198,6 +201,7 @@ public class LocacaoController extends JFrame implements ActionListener {
     nr_diarias_l.setBounds(160,350,120,20);
     this.add(nr_diarias_l);
     nr_diarias_f.setBounds(160,380,120,20);
+    nr_diarias_f.setText("0");
     this.add(nr_diarias_f);
 
     JLabel opmais = new JLabel("+");
@@ -207,6 +211,7 @@ public class LocacaoController extends JFrame implements ActionListener {
     vl_custo_opcional_l.setBounds(300,350,120,20);
     this.add(vl_custo_opcional_l);
     vl_custo_opcional_f.setBounds(300,380,120,20);
+    vl_custo_opcional_f.setText("0.00");
     this.add(vl_custo_opcional_f);
 
     JLabel opigual = new JLabel("=");
@@ -230,22 +235,24 @@ public class LocacaoController extends JFrame implements ActionListener {
 
   private void setAction(){
     nr_cnh_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e1) {
-      JTextField textField1 = (JTextField) e1.getSource();
-      String text1 = textField1.getText().toUpperCase();
-      nm_cliente_f.removeAllItems();
-      nm_cliente_f.addItem(new Cliente(0,"Selecione"));
-      ArrayList<Cliente> clientes = getClientes(text1);
-      for (Cliente cliente : clientes) {
-        nm_cliente_f.addItem(cliente);
+      if(nr_cnh_f.getText().length() > 4){
+        try {
+          nm_cliente_f.removeAllItems();
+          nm_cliente_f.addItem(new Cliente(0,"Selecione"));
+          ArrayList<Cliente> clientes = getClientes(nr_cnh_f.getText());
+          for (Cliente cliente : clientes) {
+            nm_cliente_f.addItem(cliente);
+          }
+        } catch (Exception e) {
+          nm_cliente_f.removeAllItems();
+        }
       }
     }}); 
     
     nm_cliente_f.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event) {
-          JComboBox<Cliente> comboBox = (JComboBox<Cliente>) event.getSource();
-          System.out.println(comboBox.getSelectedItem());
-          Cliente cliente = (Cliente) comboBox.getSelectedItem();
-          if(cliente.NM_CLIENTE != "Selecione"){
+          Cliente cliente = (Cliente) nm_cliente_f.getSelectedItem();
+          if(cliente.CD_CLIENTE != 0){
             nr_cnh_f.setText(cliente.NR_CNH);
             nr_cnh_f.setEditable(false);
             nr_idade_f.setText(calIdade(cliente.DT_NASCIMENTO));
@@ -316,21 +323,19 @@ public class LocacaoController extends JFrame implements ActionListener {
             }  
           }  
         } catch (Exception e) {
-          vl_custo_opcional_f.setText("");
+          vl_custo_opcional_f.setText("0.00");
+          sumTotal();
         }
         
       }
-    });   
+    });  
+    
+    saveLocacao.addActionListener(this);
   }
 
   private String calIdade(String DT_NASCIMENTO) {
     String idade = String.format("%d",Util.calIdade(DT_NASCIMENTO));
     return idade;
-  }
-
-  public void actionPerformed(ActionEvent e) {
-    // TODO Auto-generated method stub
-    
   }
 
   private ArrayList<Cliente> getClientes(String NR_CNH){
@@ -381,12 +386,46 @@ public class LocacaoController extends JFrame implements ActionListener {
   }
 
   private void sumTotal(){
-    // float sum = 0;
-    // float vlm = Float.parseFloat(vl_custo_moto_f.getText());
-    // float diar = Float.parseFloat(nr_diarias_f.getText());
-    // float vlo = Float.parseFloat(vl_custo_opcional_f.getText());
+    float sum = 0;
+    float vlm = Float.parseFloat(vl_custo_moto_f.getText().replaceAll(",", "."));
+    float diar = Float.parseFloat(nr_diarias_f.getText().replaceAll(",", "."));
+    float vlo = Float.parseFloat(vl_custo_opcional_f.getText().replaceAll(",", "."));
 
-    // sum = (vlm * diar) + vlo;
-    // vl_custo_total_f.setText(String.format("%.2f",sum));
+    sum = (vlm * diar) + vlo;
+    vl_custo_total_f.setText(String.format("%.2f",sum));
+  }
+
+  
+  public void actionPerformed(ActionEvent e) {
+    LocacaoService locacaoService = new LocacaoService();
+    Message resultado;
+    Moto moto = (Moto) ds_modelo_f.getSelectedItem();
+    Cliente cliente = (Cliente) nm_cliente_f.getSelectedItem();
+    Status status = (Status) ds_status_f.getSelectedItem();
+    ArrayList<Opcional> opcionals = new ArrayList<Opcional>();
+
+    for (Opcional opcional : ds_opcionais_f.getSelectedValuesList()) {
+      opcionals.add(opcional);
+    }
+
+    Locacao locacao = new Locacao(
+      0,
+      moto.CD_MOTO,
+      cliente.CD_CLIENTE,
+      lc_retirada_f.getText(),
+      Util.dataFormatSQL(dt_retirada_f.getText()),
+      lc_devolucao_f.getText(),
+      Util.dataFormatSQL(dt_devolucao_f.getText()),
+      status.ST_ATIVO,
+      opcionals
+    );
+
+    resultado = locacaoService.adicionaLocacao(locacao);
+
+    if(resultado.status){
+      JOptionPane.showMessageDialog(null, "Locação criada com sucesso!");
+    }else{
+        JOptionPane.showMessageDialog(null, "Erro ao salvar cliente \n" + resultado.message);
+    }
   }
 }

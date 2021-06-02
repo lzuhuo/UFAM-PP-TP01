@@ -24,7 +24,7 @@ public class ClienteService {
         try {
             clientes = clienteDAO.getClientes(NR_CNH);
         } catch (Exception e) {
-            clientes = null;
+            System.out.println(e);
         }
         return clientes;        
     }

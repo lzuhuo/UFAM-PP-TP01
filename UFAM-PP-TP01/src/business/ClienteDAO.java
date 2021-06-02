@@ -29,18 +29,23 @@ public class ClienteDAO extends Config{
         try{
             Statement st = conexao.createStatement();
             String sql =    "SELECT * FROM clientes " +
-                            "WHERE NR_CNH LIKE '%" + NR_CNH + "%' LIMIT 10";
+                            "WHERE NR_CNH LIKE '" + NR_CNH + "%' LIMIT 10";
             ResultSet rs = st.executeQuery(sql);
             while(rs.next()){
                 clientes.add(new Cliente(   rs.getInt("CD_CLIENTE"),
-                                        rs.getString("NM_CLIENTE"),
-                                        rs.getString("DT_NASCIMENTO"),
-                                        rs.getString("NR_CNH"),
-                                        rs.getString("ST_ATIVO")
-                                    ));
+                                            rs.getString("NM_CLIENTE"),
+                                            rs.getString("DT_NASCIMENTO"),
+                                            rs.getString("NR_CNH"),
+                                            rs.getString("ST_ATIVO")
+                                        ));
             }
-            return clientes;
-        }catch( SQLException e){return null;}
+            
+            st.close();
+            
+        }catch( SQLException e){
+            System.out.println(e) ;
+        }
+        return clientes;
     }
 
     public ArrayList<Cliente> listarClientes(){

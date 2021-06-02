@@ -88,10 +88,6 @@ public class MotoController extends JFrame implements ActionListener {
         }
       }  
       
-      
-      for (int secAcee : selectedAcessorios) {
-        System.out.println(secAcee);  
-      }
       ds_acessorio_moto_f.setSelectedIndices(selectedAcessorios);
       
       ds_categoria_moto_l.setBounds(20,30,120,20);
@@ -218,7 +214,6 @@ public class MotoController extends JFrame implements ActionListener {
       Acessorios
     );
 
-    System.out.println(moto);
     resultado = motoserv.atualizaMoto(moto);
     
     if(resultado.status){

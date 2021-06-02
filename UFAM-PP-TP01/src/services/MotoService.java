@@ -109,7 +109,6 @@ public class MotoService {
         AcessorioDAO acessorioDAO = new AcessorioDAO();
         try {
             respostaMoto = motoDAO.removeMoto(CD_MOTO);
-            System.out.println(respostaMoto);
             respostaAcessorio = acessorioDAO.removeAcessorioMoto(CD_MOTO).status;  
             if(!respostaAcessorio && !respostaMoto){
                 Exception removM = new Exception("Erro ao remover moto");

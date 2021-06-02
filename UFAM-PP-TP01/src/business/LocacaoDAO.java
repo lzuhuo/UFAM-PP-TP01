@@ -3,6 +3,8 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import db.Config;
+import model.Message;
+import model.Moto.Locacao;
 import model.Moto.Moto;
 import model.Moto.Opcional;
 
@@ -84,6 +86,57 @@ public class LocacaoDAO extends Config{
         }catch( SQLException e){
             System.out.println(e);
             return null;
+        }
+    }
+
+    public Message adicionaLocacao(Locacao l){
+        Message resp;
+        int codigo = -1;
+        try{
+            Statement st = conexao.createStatement();
+            st.executeUpdate("INSERT INTO locacoes VALUES (NULL ," +
+                            "" + l.CD_MOTO + "," + 
+                            "" + l.CD_CLIENTE + "," + 
+                            "'" + l.DT_RETIRADA + "'," + 
+                            "'" + l.LC_RETIRADA + "'," + 
+                            "'" + l.DT_DEVOLUCAO + "'," + 
+                            "'" + l.LC_DEVOLUCAO + "'," + 
+                            "'" + l.ST_LOCACAO + "'" + 
+                            ")"    
+                            );
+            ResultSet rs = st.getGeneratedKeys();
+            if (rs.next()) {
+                codigo = rs.getInt(1);
+            }
+            resp = new Message(true, "success",codigo);
+            rs.close();
+            return resp;
+        }catch (SQLException e) {
+            resp = new Message(false, "error:CA+L" + e.toString(), codigo);
+            return resp;
+        }
+    }
+
+    public Message adicionaOpcional(int CD_LOCACAO, int CD_OPCIONAL){
+        Message resp;
+        int codigo = -1;
+        try{
+            Statement st = conexao.createStatement();
+            st.executeUpdate("INSERT INTO locacoes_opcionais VALUES (" +
+                            "" + CD_LOCACAO + "," + 
+                            "" + CD_OPCIONAL + "" +
+                            ")"    
+                            );
+            ResultSet rs = st.getGeneratedKeys();
+            if (rs.next()) {
+                codigo = rs.getInt(1);
+            }
+            resp = new Message(true, "success",codigo);
+            rs.close();
+            return resp;
+        }catch (SQLException e) {
+            resp = new Message(false, "error:CA+LO" + e.toString(), codigo);
+            return resp;
         }
     }
 }

@@ -66,7 +66,6 @@ public class MotoDAO extends Config{
         Message resp;
         int codigo = -1;
         try{
-            System.out.println(m.toString());
             Statement st = conexao.createStatement();
             st.executeUpdate("INSERT INTO motos VALUES (NULL ," +
                             "" + m.CATMOTO.CD_CATEGORIA + "," + 
@@ -98,7 +97,6 @@ public class MotoDAO extends Config{
         Message resp;
         int codigo = -1;
         try{
-            System.out.println(m.toString());
             Statement st = conexao.createStatement();
             st.executeUpdate("UPDATE motos SET " +
                             "CD_MOTO=" + m.CD_MOTO + ", " + 

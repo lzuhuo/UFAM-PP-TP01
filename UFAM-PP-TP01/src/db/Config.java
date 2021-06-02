@@ -13,7 +13,6 @@ public class Config {
     }
 
     private static boolean conecta(){
-        System.out.println(javaDB);
         try{
             conexao = DriverManager.getConnection(url);
             System.out.println("Conexao com sucesso!");

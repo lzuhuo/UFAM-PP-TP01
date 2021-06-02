@@ -18,16 +18,8 @@ public abstract class Util {
     }
 
     public static String dataFormatSQL(String textData) {
-        String value = textData;
-        if (textData.length() < 11) {
-            value = value.replaceAll("[^0-9]", "");
-            value = value.replaceFirst("(\\d{2})(\\d{2})", "$2-$1");
-            value = value.replaceFirst("(\\d{2})\\/(\\d{2})(\\d{4})", "$3-$2-$1");
-        }else{
-            value = value.substring(0,10);
-            value = value.replaceFirst("(\\d{2})\\/(\\d{2})(\\d{4})", "$3-$2-$1");
-        }
-        return value;
+        String value[] = textData.split("/");
+        return value[2]+"-"+value[1]+"-"+value[0];
     }
 
     public static int calIdade(String dateNasc){

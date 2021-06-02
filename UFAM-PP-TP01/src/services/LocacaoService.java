@@ -3,6 +3,8 @@ package services;
 import java.util.ArrayList;
 
 import business.LocacaoDAO;
+import model.Message;
+import model.Moto.Locacao;
 import model.Moto.Moto;
 import model.Moto.Opcional;
 import util.Util;
@@ -44,6 +46,21 @@ public class LocacaoService {
             return null;
         }
         return opcionais;
+    }
+
+    public Message adicionaLocacao(Locacao l){
+        Message message;
+
+        try {
+            message = locacaoDAO.adicionaLocacao(l);
+            for (Opcional opcional : l.opcional) {
+                message = locacaoDAO.adicionaOpcional(message.codigo, opcional.CD_OPCIONAL);
+            }
+            return message;
+        } catch (Exception e) {
+            message = new Message(false, "error service" + e, -1);
+            return message;
+        }
     }
 }
 
