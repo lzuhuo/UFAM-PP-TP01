@@ -1,9 +1,11 @@
 package controller.Cadastro;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import model.Cliente.Cliente;
 import model.Moto.Moto;
 import model.Moto.Opcional;
@@ -164,8 +166,6 @@ public class LocacaoController extends JFrame implements ActionListener {
     ds_modelo_f.setEditable(false);
     this.add(ds_modelo_f);
 
-    
-
     ds_status_l.setBounds(360,210,120,20);
     this.add(ds_status_l);
     ds_status_f.setBounds(500,210,180,20);
@@ -191,20 +191,32 @@ public class LocacaoController extends JFrame implements ActionListener {
     vl_custo_moto_f.setBounds(20,380,120,20);
     this.add(vl_custo_moto_f);
 
-    vl_custo_opcional_l.setBounds(160,350,120,20);
+    JLabel opvezes = new JLabel("*");
+    opvezes.setBounds(145,380,120,20);
+    this.add(opvezes);
+    
+    nr_diarias_l.setBounds(160,350,120,20);
+    this.add(nr_diarias_l);
+    nr_diarias_f.setBounds(160,380,120,20);
+    this.add(nr_diarias_f);
+
+    JLabel opmais = new JLabel("+");
+    opmais.setBounds(285,380,120,20);
+    this.add(opmais);
+    
+    vl_custo_opcional_l.setBounds(300,350,120,20);
     this.add(vl_custo_opcional_l);
-    vl_custo_opcional_f.setBounds(160,380,120,20);
+    vl_custo_opcional_f.setBounds(300,380,120,20);
     this.add(vl_custo_opcional_f);
 
-    vl_custo_total_l.setBounds(300,350,120,20);
-    this.add(vl_custo_total_l);
-    vl_custo_total_f.setBounds(300,380,120,20);
-    this.add(vl_custo_total_f);
+    JLabel opigual = new JLabel("=");
+    opigual.setBounds(425,380,120,20);
+    this.add(opigual);
 
-    nr_diarias_l.setBounds(440,350,120,20);
-    this.add(nr_diarias_l);
-    nr_diarias_f.setBounds(440,380,120,20);
-    this.add(nr_diarias_f);
+    vl_custo_total_l.setBounds(440,350,120,20);
+    this.add(vl_custo_total_l);
+    vl_custo_total_f.setBounds(440,380,120,20);
+    this.add(vl_custo_total_f);  
 
     saveLocacao.setBounds(580,380,120,20);
     this.add(saveLocacao);
@@ -247,6 +259,7 @@ public class LocacaoController extends JFrame implements ActionListener {
       JTextField textField = (JTextField) e.getSource();
       String text = textField.getText();
       dt_retirada_f.setText(Util.dataFormat(text));
+      dt_devolucao_f.setText("");
     }});
 
     lc_retirada_f.addKeyListener(new KeyAdapter(){public void keyReleased(KeyEvent e) {
@@ -265,6 +278,7 @@ public class LocacaoController extends JFrame implements ActionListener {
           ds_marca_f.addItem(marca);
         }
         nr_diarias_f.setText(String.format("%d",CalcDiarias() + 1));
+        sumTotal();
       }
     }});
 
@@ -282,6 +296,31 @@ public class LocacaoController extends JFrame implements ActionListener {
         }
       }
     });
+
+    ds_modelo_f.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        Moto moto = (Moto) ds_modelo_f.getSelectedItem();
+        vl_custo_moto_f.setText(String.format("%.2f",moto.VL_CUSTO));
+        sumTotal();
+      }
+    });
+
+    ds_opcionais_f.addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent evt) {
+        try {
+          if (evt.getValueIsAdjusting()){
+            ArrayList<Opcional> opcionais = ( ArrayList<Opcional>) ds_opcionais_f.getSelectedValuesList();
+            if(opcionais.get(0).DS_OPCIONAL != ""){
+              vl_custo_opcional_f.setText(String.format("%.2f",sumOpcionais(opcionais)));  
+              sumTotal();
+            }  
+          }  
+        } catch (Exception e) {
+          vl_custo_opcional_f.setText("");
+        }
+        
+      }
+    });   
   }
 
   private String calIdade(String DT_NASCIMENTO) {
@@ -331,5 +370,23 @@ public class LocacaoController extends JFrame implements ActionListener {
     String DT_INICIO = dt_retirada_f.getText();
     String DT_FIM = dt_devolucao_f.getText();
     return Util.diffDates(DT_INICIO, DT_FIM);
+  }
+
+  private float sumOpcionais(ArrayList<Opcional> op){
+    float sum = 0;
+    for (Opcional opcional : op) {
+      sum = sum + opcional.VL_OPCIONAL;
+    }
+    return sum;
+  }
+
+  private void sumTotal(){
+    // float sum = 0;
+    // float vlm = Float.parseFloat(vl_custo_moto_f.getText());
+    // float diar = Float.parseFloat(nr_diarias_f.getText());
+    // float vlo = Float.parseFloat(vl_custo_opcional_f.getText());
+
+    // sum = (vlm * diar) + vlo;
+    // vl_custo_total_f.setText(String.format("%.2f",sum));
   }
 }

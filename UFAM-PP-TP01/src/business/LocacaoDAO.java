@@ -3,7 +3,6 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import db.Config;
-import model.Categoria.Acessorio;
 import model.Moto.Moto;
 import model.Moto.Opcional;
 
@@ -77,7 +76,7 @@ public class LocacaoDAO extends Config{
             ResultSet rs = st.executeQuery(sql);
             while(rs.next()){
                 opcionais.add(new Opcional( rs.getInt("CD_OPCIONAL"), rs.getString("DS_OPCIONAL"), 
-                                    rs.getString("VL_OPCIONAL")
+                                    rs.getFloat("VL_OPCIONAL")
                                     ));
             }
             rs.close();
