@@ -3,7 +3,8 @@ package db;
 import java.sql.*;
 
 public class Config {
-    private static String javaDB = System.getenv("PWD") + "/UFAM-PP-TP01/src/db/moto.db";
+    private static String javaDB = "./UFAM-PP-TP01/src/db/moto.db";
+    
     
     private static String url = "jdbc:sqlite:"+ javaDB;
     protected static Connection conexao = null;
@@ -14,6 +15,7 @@ public class Config {
 
     private static boolean conecta(){
         try{
+        	System.out.println(javaDB);
             conexao = DriverManager.getConnection(url);
             System.out.println("Conexao com sucesso!");
             return true;
