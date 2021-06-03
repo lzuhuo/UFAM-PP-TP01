@@ -10,4 +10,8 @@ public class Message {
         this.message = message;
         this.codigo = codigo;
     }
+
+    public String toString(){
+        return String.format("{'status': %b,'message': %s,'codigo': %d",this.status, this.message, this.codigo);
+    }
 }

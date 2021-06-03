@@ -46,4 +46,8 @@ public class Locacao {
         this.VL_TOTAL = VL_TOTAL;
         this.opcional = opcional;
     }
+
+    public Locacao(){
+        return;
+    }
 }

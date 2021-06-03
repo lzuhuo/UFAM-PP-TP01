@@ -20,9 +20,11 @@ public class Cliente {
         this.ST_ATIVO = ST_ATIVO;
     }
 
-    public Cliente(int CD_CLIENTE, String NM_CLIENTE){
+    public Cliente(int CD_CLIENTE, String NM_CLIENTE, String NR_CNH,String DT_NASCIMENTO){
         this.CD_CLIENTE = CD_CLIENTE;
         this.NM_CLIENTE = NM_CLIENTE;
+        this.NR_CNH = NR_CNH;
+        this.DT_NASCIMENTO = DT_NASCIMENTO;
     }
 
     public String toString(){

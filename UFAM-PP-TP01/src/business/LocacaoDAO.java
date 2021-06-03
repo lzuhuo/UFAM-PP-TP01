@@ -69,6 +69,31 @@ public class LocacaoDAO extends Config{
         }
     }
 
+    public ArrayList<Opcional> getOpcionais(int CD_LOCACAO){
+        ArrayList<Opcional> opcionais = new ArrayList<Opcional>();
+        try{
+            Statement st = conexao.createStatement();
+            String sql = " SELECT * from locacoes_opcionais AS LS   " +
+                         " LEFT JOIN locacoes AS LO                 " +
+                         " ON LO.CD_LOCACAO = LS.CD_LOCACAO         " +
+                         " LEFT JOIN opcionais AS O                 " +
+                         " ON O.CD_OPCIONAL = LS.CD_OPCIONAL        " +
+                         " WHERE LO.CD_LOCACAO = " + CD_LOCACAO       ;
+            
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                opcionais.add(new Opcional( rs.getInt("CD_OPCIONAL"), rs.getString("DS_OPCIONAL"), 
+                                    rs.getFloat("VL_OPCIONAL")
+                                    ));
+            }
+            rs.close();
+            return opcionais;
+        }catch( SQLException e){
+            System.out.println(e);
+            return null;
+        }
+    }
+
     public ArrayList<Opcional> listaOpcionais(){
         ArrayList<Opcional> opcionais = new ArrayList<Opcional>();
         try{
@@ -108,7 +133,8 @@ public class LocacaoDAO extends Config{
             while(rs.next()){
                 opcionais.add(new Locacao( rs.getInt("CD_LOCACAO"), 
                                             new Moto(rs.getInt("CD_MOTO"),rs.getString("DS_MODELO")), 
-                                            new Cliente(rs.getInt("CD_CLIENTE"),rs.getString("NM_CLIENTE")), 
+                                            new Cliente(rs.getInt("CD_CLIENTE"),rs.getString("NM_CLIENTE"),
+                                            rs.getString("NR_CNH"),rs.getString("DT_NASCIMENTO")), 
                                             rs.getString("DT_RETIRADA"), rs.getString("LC_RETIRADA"), 
                                             rs.getString("DT_DEVOLUCAO"), rs.getString("LC_DEVOLUCAO"), 
                                             new Status(rs.getString("ST_LOCACAO"), rs.getString("DS_LOCACAO")),
@@ -124,12 +150,28 @@ public class LocacaoDAO extends Config{
         }
     }
 
+    public ArrayList<Status> getLocStatus(){
+        ArrayList<Status> status = new ArrayList<Status>();
+        try {
+            Statement st = conexao.createStatement();
+            String sql = " SELECT * FROM locacoes_status " +
+                         " WHERE ST_ATIVO = 'S'          " ;
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                status.add(new Status(rs.getString("ST_LOCACAO"), rs.getString("DS_LOCACAO")));
+            }
+            return status;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public Locacao getLocacao(int CD_LOCACAO){
-        Locacao locacao = new Locacao();
+        ArrayList<Locacao> locacao = new ArrayList<Locacao>();
         
         try {
             Statement st = conexao.createStatement();
-            String sql = " SELECT * FROM locacoes as LO " +
+            String sql =" SELECT * FROM locacoes as LO " +
                         " INNER JOIN motos as MO " +
                         " ON MO.CD_MOTO = LO.CD_MOTO " +
                         " INNER JOIN clientes as CI " +
@@ -141,18 +183,20 @@ public class LocacaoDAO extends Config{
                         " LIMIT 1";
             ResultSet rs = st.executeQuery(sql);
             while(rs.next()){
-                locacao = new Locacao( rs.getInt("CD_LOCACAO"), 
-                                            new Moto(rs.getInt("CD_MOTO"),rs.getString("DS_MODELO")), 
-                                            new Cliente(rs.getInt("CD_CLIENTE"),rs.getString("NM_CLIENTE")), 
+                locacao.add(new Locacao( rs.getInt("CD_LOCACAO"), 
+                                            new Moto(rs.getInt("CD_MOTO"),rs.getString("DS_MARCA"),
+                                            rs.getString("DS_MODELO"),rs.getFloat("VL_CUSTO")), 
+                                            new Cliente(rs.getInt("CD_CLIENTE"),rs.getString("NM_CLIENTE"),
+                                            rs.getString("NR_CNH"),rs.getString("DT_NASCIMENTO")), 
                                             rs.getString("DT_RETIRADA"), rs.getString("LC_RETIRADA"), 
                                             rs.getString("DT_DEVOLUCAO"), rs.getString("LC_DEVOLUCAO"), 
                                             new Status(rs.getString("ST_LOCACAO"), rs.getString("DS_LOCACAO")),
                                             rs.getFloat("VL_TOTAL"),                                            
                                             new ArrayList<Opcional>()
-                                    );
+                                    ));
             }
             rs.close();
-            return locacao;
+            return locacao.get(0);
         } catch (SQLException e) {
             System.out.println(e);
             return null;
@@ -209,5 +253,35 @@ public class LocacaoDAO extends Config{
             resp = new Message(false, "error:CA+LO" + e.toString(), codigo);
             return resp;
         }
+    }
+
+    //CLC
+    public Message atualizaLocacao(Locacao c){
+        Message resp;
+        int codigo = -1;
+        try{
+            Statement st = conexao.createStatement();
+            String sql = "UPDATE locacoes SET                       " +
+                         "ST_LOCACAO='" + c.status.ST_LOCACAO + "', " + 
+                         "VL_TOTAL=" + c.VL_TOTAL + "               " + 
+                         "WHERE CD_LOCACAO=" + c.CD_LOCACAO ;
+            st.executeUpdate(sql);
+            
+            resp = new Message(true, "success",c.CD_LOCACAO);
+            return resp;
+        }catch (SQLException e) {
+            resp = new Message(false, "error:CLC" + e.toString(), codigo);
+            return resp;
+        }
+    }
+
+    public Boolean removeOpcional(int CD_LOCACAO){
+        try{
+            Statement st = conexao.createStatement();
+            String sql =    " DELETE FROM locacoes_opcionais" +
+                            " WHERE CD_LOCACAO=" + CD_LOCACAO;
+            st.executeUpdate(sql);
+            return true;  
+        }catch( SQLException e){ return false;}
     }
 }

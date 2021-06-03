@@ -7,6 +7,7 @@ import model.Message;
 import model.Moto.Locacao;
 import model.Moto.Moto;
 import model.Moto.Opcional;
+import model.Moto.Status;
 import util.Util;
 
 public class LocacaoService {
@@ -64,10 +65,21 @@ public class LocacaoService {
 
         try {
             locacao = locacaoDAO.getLocacao(CD_LOCACAO);
+            locacao.opcional = locacaoDAO.getOpcionais(CD_LOCACAO);
         } catch (Exception e) {
             return null;
         }
         return locacao;
+    }
+
+    public ArrayList<Status> getLocStatus(){
+        ArrayList<Status> status = new ArrayList<Status>();
+        try {
+            status = locacaoDAO.getLocStatus();
+        } catch (Exception e) {
+            return null;
+        }
+        return status;
     }
 
     public Message adicionaLocacao(Locacao l){
@@ -83,6 +95,23 @@ public class LocacaoService {
             message = new Message(false, "error service" + e, -1);
             return message;
         }
+    }
+    public Message atualizaLocacao(Locacao c){
+        Message resp;
+        try {
+            resp = locacaoDAO.atualizaLocacao(c);
+            if(locacaoDAO.removeOpcional(c.CD_LOCACAO)){
+                for(Opcional opcional : c.opcional){
+                    resp = locacaoDAO.adicionaOpcional(c.CD_LOCACAO, opcional.CD_OPCIONAL);
+                }
+            }else{
+                Exception era = new Exception();
+                resp.message+= " removeacessorio: " + era;
+            }
+        } catch (Exception e) {
+            return new Message(false, "error service" + e, -1);
+        }
+        return resp;
     }
 }
 

@@ -83,11 +83,9 @@ public class LocacaoController extends JFrame implements ActionListener {
     ds_marca_f = new JComboBox<String>();
         
     ds_status_f = new JComboBox<Status>();
-    ds_status_f.addItem(new Status("","Selecione"));
-    ds_status_f.addItem(new Status("A","Agendado"));
-    ds_status_f.addItem(new Status("C","Cancelado"));
-    ds_status_f.addItem(new Status("D","Devolvido"));
-    ds_status_f.addItem(new Status("R","Retirado"));
+    for (Status status : getLocStatus()) {
+      ds_status_f.addItem(status);
+    }
 
     ArrayList<Opcional> opcionais = listaOpcionais();
     DefaultListModel<Opcional> defaultop = new DefaultListModel<Opcional>();
@@ -280,7 +278,7 @@ public class LocacaoController extends JFrame implements ActionListener {
       String text = textField.getText();
       dt_devolucao_f.setText(Util.dataFormat(text));
       if(dt_devolucao_f.getText().length() == 10){
-        nr_diarias_f.setText(String.format("%d",CalcDiarias() + 1));
+        nr_diarias_f.setText(String.format("%d",CalcDiarias()));
         sumTotal();
         ArrayList<String> marcas = getMarcas();
         ds_marca_f.removeAllItems();
@@ -301,11 +299,9 @@ public class LocacaoController extends JFrame implements ActionListener {
         if(ds_marca_f.getSelectedItem().toString() != "Selecione"){
           ArrayList<Moto> motos = getModelMoto();
           ds_modelo_f.removeAllItems();
-          
           for (Moto moto : motos) {
             ds_modelo_f.addItem(moto);
           }
-          ds_modelo_f.setSelectedIndex(-1);
         }        
       }
     });
@@ -370,6 +366,11 @@ public class LocacaoController extends JFrame implements ActionListener {
     return marcas;
   }
 
+  private ArrayList<Status> getLocStatus(){
+    LocacaoService locacaoService = new LocacaoService();
+    return locacaoService.getLocStatus();
+  }
+
   private ArrayList<Opcional> listaOpcionais(){
     ArrayList<Opcional> opcionais = new ArrayList<Opcional>();
     LocacaoService locacaoService = new LocacaoService();
@@ -409,7 +410,7 @@ public class LocacaoController extends JFrame implements ActionListener {
     Cliente cliente = (Cliente) nm_cliente_f.getSelectedItem();
     Status status = (Status) ds_status_f.getSelectedItem();
     ArrayList<Opcional> opcionals = new ArrayList<Opcional>();
-    Float total = Float.parseFloat(vl_custo_total_f.getText());
+    Float total = Float.parseFloat(vl_custo_total_f.getText().replaceAll(",", "."));
 
     for (Opcional opcional : ds_opcionais_f.getSelectedValuesList()) {
       opcionals.add(opcional);
@@ -432,6 +433,7 @@ public class LocacaoController extends JFrame implements ActionListener {
 
     if(resultado.status){
       JOptionPane.showMessageDialog(null, "Locação criada com sucesso!");
+      setVisible(false);
     }else{
         JOptionPane.showMessageDialog(null, "Erro ao salvar cliente \n" + resultado.message);
     }

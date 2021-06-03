@@ -60,8 +60,6 @@ public class Moto {
         this.DS_MODELO = DS_MODELO;
     }
 
-    
-
     public String toString(){
         return String.format("%s", this.DS_MODELO);
     }

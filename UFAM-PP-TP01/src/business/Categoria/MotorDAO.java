@@ -19,4 +19,3 @@ public class MotorDAO extends Config{
         }catch( SQLException e){ return null;}
     }
 }
-
