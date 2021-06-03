@@ -113,5 +113,15 @@ public class LocacaoService {
         }
         return resp;
     }
+
+    public Float getSumLocacoes(String ST_LOCACAO){
+        float soma = 0;
+        try {
+            soma = locacaoDAO.getSumLocacoes(ST_LOCACAO);
+        } catch (Exception e) {
+            return soma;
+        }
+        return soma;
+    }
 }
 

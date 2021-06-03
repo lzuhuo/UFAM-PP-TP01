@@ -120,14 +120,14 @@ public class LocacaoDAO extends Config{
         ArrayList<Locacao> opcionais = new ArrayList<Locacao>();
         try{
             Statement st = conexao.createStatement();
-            String sql = " SELECT * FROM locacoes as LO " +
-                         " INNER JOIN motos as MO " +
-                         " ON MO.CD_MOTO = LO.CD_MOTO " +
-                         " INNER JOIN clientes as CI " +
+            String sql = " SELECT * FROM locacoes as LO     " +
+                         " INNER JOIN motos as MO           " +
+                         " ON MO.CD_MOTO = LO.CD_MOTO       " +
+                         " INNER JOIN clientes as CI        " +
                          " ON CI.CD_CLIENTE = LO.CD_CLIENTE " +
                          " INNER JOIN locacoes_status AS LS " +
                          " ON LS.ST_LOCACAO = LO.ST_LOCACAO " +
-                         " WHERE LO.ST_LOCACAO = 'R'            " ;
+                         " WHERE LO.ST_LOCACAO <> 'C'       " ;
 
             ResultSet rs = st.executeQuery(sql);
             while(rs.next()){
@@ -283,5 +283,21 @@ public class LocacaoDAO extends Config{
             st.executeUpdate(sql);
             return true;  
         }catch( SQLException e){ return false;}
+    }
+
+    public Float getSumLocacoes(String ST_LOCACAO){
+        float soma = 0;
+        try {
+            Statement st = conexao.createStatement();
+            String sql = " SELECT SUM(VL_TOTAL) FROM locacoes    " +
+                         " WHERE ST_LOCACAO = '"+ ST_LOCACAO + "'" ; 
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){
+                soma = rs.getFloat(1);
+            }
+            return soma;
+        } catch (Exception e) {
+            return soma;
+        }
     }
 }
