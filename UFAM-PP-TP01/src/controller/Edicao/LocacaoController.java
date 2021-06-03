@@ -154,7 +154,7 @@ public class LocacaoController extends JFrame implements ActionListener {
     lc_devolucao_l.setBounds(360,120,130,20);
     this.add(lc_devolucao_l);
     lc_devolucao_f.setBounds(500,120,80,20);
-    lc_devolucao_f.setText(Util.dataFormatSQLReverse(l.LC_DEVOLUCAO));
+    lc_devolucao_f.setText(l.LC_DEVOLUCAO);
     lc_devolucao_f.setEditable(false);
     this.add(lc_devolucao_f);
 
@@ -168,7 +168,7 @@ public class LocacaoController extends JFrame implements ActionListener {
     dt_devolucao_l.setBounds(360,150,130,20);
     this.add(dt_devolucao_l);
     dt_devolucao_f.setBounds(500,150,120,20);
-    dt_devolucao_f.setText(l.DT_DEVOLUCAO);
+    dt_devolucao_f.setText(Util.dataFormatSQLReverse(l.DT_DEVOLUCAO));
     dt_devolucao_f.setEditable(false);
     this.add(dt_devolucao_f);
 
