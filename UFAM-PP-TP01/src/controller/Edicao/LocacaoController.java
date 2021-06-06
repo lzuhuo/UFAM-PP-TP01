@@ -72,7 +72,7 @@ public class LocacaoController extends JFrame implements ActionListener {
 
   public LocacaoController(int CD_LOCACAO){
 
-    super("Nova Locação de Motocicleta");
+    super("Edição Locação de Motocicleta");
     this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     this.CD_LOCACAO = CD_LOCACAO;

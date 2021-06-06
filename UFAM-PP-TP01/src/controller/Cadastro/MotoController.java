@@ -44,7 +44,7 @@ public class MotoController extends JFrame implements ActionListener {
   JButton saveMoto = new JButton("Salvar");
 
     public MotoController(){
-      super("Edição de Motocicleta");
+      super("Cadastro de Motocicleta");
       setAction();
 
       this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

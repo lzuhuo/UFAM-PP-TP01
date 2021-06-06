@@ -24,7 +24,7 @@ public class ClienteController extends JFrame implements ActionListener {
   private Cliente cliente;
 
   public ClienteController(int CD_CLIENTE) {
-    super("Cadastro de Cliente");
+    super("Edição de Cliente");
     this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     this.setLayout(null);
     this.CD_CLIENTE = CD_CLIENTE;
